@@ -1,5 +1,7 @@
 package negócios;
 
+import java.util.List;
+
 public class CaminhaoLixo extends Carro{
 	private int nFuncionarios;
 	private double capacidade;
@@ -15,9 +17,10 @@ public class CaminhaoLixo extends Carro{
 	
 	public void chamarControle(PontoDeColeta pColeta) {
 		
+	}
 
 	@Override
-	public void locomover(Ponto destino) {
+	public void locomover(Ponto destino, List<Ponto>[][] percursos) {
 		
 	}
 }

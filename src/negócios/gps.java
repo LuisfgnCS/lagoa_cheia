@@ -3,10 +3,10 @@ package negócios;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class gps {
+public abstract class Gps {
 	public List<Ponto>[][] camMin(Bairro grafo){
 		int[][] distancia = Arrays.copyOf(grafo.getW(), grafo.getW().length);
-		List<Ponto>[][] Pm = null;
+		int[][][] Pm = null;
 		for (int i = 0; i < grafo.getVertices().size(); i++) {
 			for (int j = 0; j < grafo.getVertices().size(); j++) {
 				if(distancia[i][j] > 0) {
