@@ -30,4 +30,6 @@ public class PontoDeColeta extends Ponto{
 	public void setvLixo(int vLixo) {
 		this.vLixo = vLixo;
 	}
+	
+	
 }

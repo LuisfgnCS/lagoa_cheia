@@ -2,17 +2,15 @@ package negócios;
 
 import java.util.List;
 
-public abstract class Carro {
-	String placa;
+public abstract class Carro extends Thread {
 	int PontoAtual;
 	
-	public Carro(String placa, int pontoAtual) {
+	public Carro(int pontoAtual) {
 		super();
-		this.placa = placa;
 		PontoAtual = pontoAtual;
 	}
 	
-	public abstract void locomover(Bairro grafo, int destino, List<Integer>[][] percursos) throws InterruptedException; 
+	public abstract void locomover(Bairro grafo, int destino, List<Integer> percursos) throws InterruptedException; 
 	
 	public void avancar(Bairro grafo, int a, int b, List<Integer> percurso) throws InterruptedException {
 		this.PontoAtual = -1;

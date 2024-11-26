@@ -6,6 +6,7 @@ public class Bairro {
 	private String nome;
 	private List<Ponto> vertices;
 	private int[][] w; // matriz de pesos
+	public List<Integer>[][] getPercursos;
 	
 	public String getNome() {
 		return nome;
