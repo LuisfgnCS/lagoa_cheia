@@ -15,11 +15,7 @@ public class Carrocinha extends Carro {
 		int a = 0, b = 1;
 		if(percurso != null) {
 			do {
-				this.PontoAtual = -1;
-				Thread.sleep(grafo.getW()[percurso.get(a)][percurso.get(b)]);
-				this.PontoAtual = percurso.get(b);
-				a++;
-				b++;
+				avancar(grafo, a, b, percurso);
 			} while(b != destino);
 		}
 	}
