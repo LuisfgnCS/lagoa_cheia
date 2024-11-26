@@ -1,6 +1,6 @@
 package negócios;
 
-public class CaminhaoLixo {
+public class CaminhaoLixo extends Carro{
 	private int nFuncionarios;
 	private double capacidade;
 	
@@ -14,6 +14,10 @@ public class CaminhaoLixo {
 	}
 	
 	public void chamarControle(PontoDeColeta pColeta) {
+		
+
+	@Override
+	public void locomover(Ponto destino) {
 		
 	}
 }
