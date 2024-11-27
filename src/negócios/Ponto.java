@@ -1,5 +1,5 @@
 package negócios;
 
-public class Ponto {
+public abstract class Ponto {
 	String nome;
 }
