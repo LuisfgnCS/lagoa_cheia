@@ -1,13 +1,15 @@
 package negócios;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bairro {
 	private String nome;
-	private List<Ponto> vertices;
+	private List<Ponto> vertices = new ArrayList<>();
 	private int[][] w; // matriz de pesos
 	public List<Integer>[][] Percursos;
 	private int[][] distancias;
+	
 	
 	
 	
