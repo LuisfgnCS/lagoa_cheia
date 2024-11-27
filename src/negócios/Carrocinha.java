@@ -13,7 +13,7 @@ public class Carrocinha extends Carro {
 	public boolean getOcupada() {
 		return ocupada;
 	}
-
+	
 	@Override
 	public void locomover(Bairro grafo, int destino, List<Integer> percurso) throws InterruptedException {
 		int a = 0, b = 1;

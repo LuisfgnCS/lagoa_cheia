@@ -2,13 +2,14 @@ package negócios;
 
 import java.util.List;
 
-public abstract class Carro extends Thread {
+public abstract class Carro {
 	int PontoAtual;
 	
 	public Carro(int pontoAtual) {
 		super();
 		PontoAtual = pontoAtual;
 	}
+
 	
 	public abstract void locomover(Bairro grafo, int destino, List<Integer> percursos) throws InterruptedException; 
 	

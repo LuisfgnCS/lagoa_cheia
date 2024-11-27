@@ -33,7 +33,7 @@ public class CaminhaoLixo extends Carro{
 		}else if(pColeta.getnCachorros() == 0 && pColeta.getnGatos() == 0 && pColeta.getnRatos() > 0) {
 			return true;
 		}
-		
+		 
 		return false;
 	}
 	
