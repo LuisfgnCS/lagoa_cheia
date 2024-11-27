@@ -16,7 +16,7 @@ public class CentroDeZoonoses extends Ponto{
 
 	public void mandarCarrocinha(Bairro grafo,int destino) throws InterruptedException {
 		Carrocinha carrocinha = procurarCarrocinhaDisponivel();
-		List<Integer> percurso = new ArrayList<>(grafo.getPercursos[carrocinha.PontoAtual][destino]);
+		List<Integer> percurso = new ArrayList<>(grafo.Percursos[carrocinha.PontoAtual][destino]);
 		carrocinha.locomover(grafo, destino,percurso);
 	}
 	

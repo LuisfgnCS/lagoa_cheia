@@ -2,7 +2,7 @@ package negócios;
 
 import java.util.List;
 
-public abstract class Carro {
+public abstract class Carro extends Thread{
 	int PontoAtual;
 	
 	public Carro(int pontoAtual) {

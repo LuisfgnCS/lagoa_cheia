@@ -3,16 +3,16 @@ package negócios;
 import java.util.List;
 
 public class CaminhaoLixo extends Carro{
-	private int nFuncionarios;
-	private double capacidade;
+	private int nFuncionarios; 
+	private double capacidade; 
 	
 	public CaminhaoLixo( int nFuncionarios, double capacidade) {
 		super(0);
-		this.nFuncionarios = nFuncionarios;
-		this.setCapacidade(capacidade);
+		this.nFuncionarios = nFuncionarios; 
+		this.setCapacidade(capacidade);     
 	}
 
-	public int coletar(Bairro grafo) throws InterruptedException {
+	public int coletar(Bairro grafo) throws InterruptedException{
 		PontoDeColeta pontodecoleta = (PontoDeColeta) grafo.getVertices().get(PontoAtual);
 		int tempo = pontodecoleta.getvLixo() / this.nFuncionarios;
 		if(lixoRasgado(pontodecoleta)) {
@@ -51,13 +51,18 @@ public class CaminhaoLixo extends Carro{
 			} while(b != destino);
 		}
 	}
-
-
+	
 	public double getCapacidade() {
 		return capacidade;
 	}
 
 	public void setCapacidade(double capacidade) {
 		this.capacidade = capacidade;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 }
