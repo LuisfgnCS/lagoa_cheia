@@ -2,6 +2,8 @@ package negócios;
 
 import java.util.List;
 
+import exceptions.CapacidadeMaximaException;
+
 public abstract class Carro extends Thread{
 	protected int PontoAtual;
 	protected Bairro mapa;
@@ -12,7 +14,7 @@ public abstract class Carro extends Thread{
 		this.mapa = mapa;
 	}
 	
-	public abstract void locomover(Bairro grafo, int destino, List<Integer> percursos) throws InterruptedException; 
+	public abstract void locomover(Bairro grafo, int destino, List<Integer> percursos) throws InterruptedException, CapacidadeMaximaException; 
 	
 	public int avancar(Bairro grafo, int a, int b, List<Integer> percurso) throws InterruptedException {
 		this.PontoAtual = -1;

@@ -13,8 +13,8 @@ import negócios.PontoDeColeta;
 
 public class Setup {
 
-	@SuppressWarnings("null")
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	@SuppressWarnings({ "null", "finally" })
+	public static Bairro setup() throws FileNotFoundException, IOException {
 		String caminho = "/home/ruanp/Documentos/grafo.txt";
 		int contador = 0;
 
@@ -49,10 +49,13 @@ public class Setup {
 				contador++;
 			}
 			grafo.setW(w);
+			return grafo;
 			
 			
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
+		}finally {
+			return null;
 		}
 
 	}

@@ -28,7 +28,7 @@ public class CaminhaoLixo extends Carro{
 				tempo = tempo * 2;
 			}
 		}else {
-			tempo = (capacidade - lixoArmazenado) / nFuncionarios;
+			tempo = (int )(capacidade - lixoArmazenado) / nFuncionarios;
 			if(lixoRasgado(pontodecoleta)) {
 				tempo = tempo * 2;
 			}
@@ -94,9 +94,7 @@ public class CaminhaoLixo extends Carro{
 		catch (Exception e) {
 			// TODO: handle exception
 		}
-		while(capacidade != 0) {
-			
-		}
+
 	}
 	
 	private List<Integer> seguirRamo(int folha) {
