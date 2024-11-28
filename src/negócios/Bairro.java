@@ -1,12 +1,13 @@
 package negócios;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import negócios.Gps.Result;
 
 public class Bairro {
 	private String nome;
-	private List<Ponto> vertices;
+	private List<Ponto> vertices = new ArrayList<>();
 	private int[][] w; // matriz de pesos
 	public List<Integer>[][] percursos;
 	private int[][] distancias;
@@ -21,6 +22,7 @@ public class Bairro {
 		this.mst = Gps.calcularMSTeFolhas(w);
 		percursos = Gps.camMin(this);
 	}
+	
 	
 	public String getNome() {
 		return nome;

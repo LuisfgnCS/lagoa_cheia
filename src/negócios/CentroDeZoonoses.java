@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CentroDeZoonoses extends Ponto{
-	List<Carrocinha> carrocinhas;
+	List<Carrocinha> carrocinhas = new ArrayList<>();
 	
 	public CentroDeZoonoses(Bairro grafo) {
 		for(int i = 0; i<= 2;i ++) {
