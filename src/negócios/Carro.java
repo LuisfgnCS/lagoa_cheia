@@ -3,13 +3,14 @@ package negócios;
 import java.util.List;
 
 public abstract class Carro extends Thread{
-	int PontoAtual;
+	protected int PontoAtual;
+	protected Bairro mapa;
 	
-	public Carro(int pontoAtual) {
+	public Carro(int pontoAtual, Bairro mapa) {
 		super();
 		PontoAtual = pontoAtual;
+		this.mapa = mapa;
 	}
-
 	
 	public abstract void locomover(Bairro grafo, int destino, List<Integer> percursos) throws InterruptedException; 
 	
@@ -19,5 +20,17 @@ public abstract class Carro extends Thread{
 		this.PontoAtual = percurso.get(b);
 		a++;
 		b++;
+	}
+	
+	public int menor(int[] valores) {
+		int menor = valores[0];
+        for (int num : valores) {
+            if (mapa.getDistancias()[PontoAtual][num] < mapa.getDistancias()[PontoAtual][menor]) {
+            	if(!mapa.getVertices().get(num).emRota) {
+            		menor = num;
+            	}
+            }
+        }
+        return menor;
 	}
 }

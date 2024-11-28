@@ -7,25 +7,31 @@ import java.util.List;
 
 public class CaminhaoLixo extends Carro{
 	private int nFuncionarios; 
-	private double capacidade; 
-	private int compressoes;
-	private Bairro mapa;
+	private int capacidade; 
+	private int lixoArmazenado = 0;
+	private int compressoes = 3;
 	
-	public CaminhaoLixo( int nFuncionarios, double capacidade) {
-		super(0);
+	public CaminhaoLixo( int nFuncionarios, double capacidade, Bairro mapa) {
+		super(0, mapa);
 		this.nFuncionarios = nFuncionarios; 
-		this.setCapacidade(capacidade);     
+		this.setCapacidade(capacidade);   
 	}
 
 	public int coletar() throws InterruptedException{
 		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
 		int lixo = pontodecoleta.getvLixo();
-//		if(capacidade - lixo < 0)
-		int tempo = lixo / this.nFuncionarios;
-		if(lixoRasgado(pontodecoleta)) {
-			tempo = tempo * 2;
+		int tempo = 0;
+		if(capacidade - lixoArmazenado - lixo > 0){
+			tempo = lixo / this.nFuncionarios;
+			if(lixoRasgado(pontodecoleta)) {
+				tempo = tempo * 2;
+			}
+		}else {
+			tempo = (capacidade - lixoArmazenado) / nFuncionarios;
+			if(lixoRasgado(pontodecoleta)) {
+				tempo = tempo * 2;
+			}
 		}
-		
 		if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() > 0) {
 			chamarControle(mapa);
 		}
@@ -78,6 +84,9 @@ public class CaminhaoLixo extends Carro{
 		}
 		catch (Exception e) {
 			// TODO: handle exception
+		}
+		while(capacidade != 0) {
+			
 		}
 	}
 	

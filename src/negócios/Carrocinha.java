@@ -6,8 +6,8 @@ public class Carrocinha extends Carro {
 	
 	Boolean ocupada = false;
 	
-	public Carrocinha(int pontoAtual) {
-		super(pontoAtual);
+	public Carrocinha(int pontoAtual, Bairro mapa) {
+		super(pontoAtual, mapa);
 	}
 	
 	public boolean getOcupada() {
