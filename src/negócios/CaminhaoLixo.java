@@ -7,9 +7,10 @@ import java.util.List;
 
 public class CaminhaoLixo extends Carro{
 	private int nFuncionarios; 
-	private int capacidade; 
+	private double capacidade; 
 	private int lixoArmazenado = 0;
 	private int compressoes = 3;
+	private int tempo;
 	
 	public CaminhaoLixo( int nFuncionarios, double capacidade, Bairro mapa) {
 		super(0, mapa);
@@ -20,7 +21,7 @@ public class CaminhaoLixo extends Carro{
 	public int coletar() throws InterruptedException{
 		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
 		int lixo = pontodecoleta.getvLixo();
-		int tempo = 0;
+		double tempo = 0;
 		if(capacidade - lixoArmazenado - lixo > 0){
 			tempo = lixo / this.nFuncionarios;
 			if(lixoRasgado(pontodecoleta)) {
@@ -35,7 +36,7 @@ public class CaminhaoLixo extends Carro{
 		if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() > 0) {
 			chamarControle(mapa);
 		}
-		return tempo;
+		return (int) tempo;
 	}
 	
 	private boolean lixoRasgado(PontoDeColeta pColeta) {
@@ -59,8 +60,8 @@ public class CaminhaoLixo extends Carro{
 		int a = 0, b = 1;
 		if(percurso != null) {
 			do {
-				avancar(grafo, a, b, percurso);
-				coletar();
+				setTempo(getTempo() + avancar(grafo, a, b, percurso));
+				setTempo(getTempo() + coletar());
 			} while(b != destino);
 		}
 	}
@@ -71,6 +72,14 @@ public class CaminhaoLixo extends Carro{
 
 	public void setCapacidade(double capacidade) {
 		this.capacidade = capacidade;
+	}
+	
+	public void setTempo(int tempo) {
+		this.tempo = tempo;
+	}
+	
+	public int getTempo() {
+		return tempo;
 	}
 
 	@Override

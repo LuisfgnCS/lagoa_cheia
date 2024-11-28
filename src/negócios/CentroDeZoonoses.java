@@ -8,7 +8,7 @@ public class CentroDeZoonoses extends Ponto{
 	
 	public CentroDeZoonoses(Bairro grafo) {
 		for(int i = 0; i<= 2;i ++) {
-			carrocinhas.add(new Carrocinha(grafo.getVertices().size() - 1));
+			carrocinhas.add(new Carrocinha(grafo.getVertices().size() - 1, grafo));
 		}
 	}
 	
