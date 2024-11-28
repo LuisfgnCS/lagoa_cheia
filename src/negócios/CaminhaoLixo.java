@@ -88,6 +88,8 @@ public class CaminhaoLixo extends Carro{
 	public void locomover(Bairro grafo, int destino, List<Integer> percurso) throws InterruptedException, CapacidadeMaximaException {
 		int a = 0, b = 1;
 		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
+		PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(destino);
+		vertice.emRota = true;
 		if(percurso != null) {
 			do {
 				avancar(grafo, a, b, percurso);
@@ -98,6 +100,7 @@ public class CaminhaoLixo extends Carro{
 					chamarControle(mapa);
 				}
 			} while(b != destino);
+			mapa.getFolhasMod().remove(destino);
 		}
 	}
 	
@@ -111,30 +114,41 @@ public class CaminhaoLixo extends Carro{
 
 	@Override
 	public void run() {
-		int folha = menor(mapa.getFolhasMod()); // procura a menor folha que ainda não foi visitada ou está em rota
-		List<Integer> percurso = seguirRamo(folha); // Traça o percurso pelo ramo até a folha
-		try {
-			locomover(this.mapa, percurso.get(percurso.size() - 1), percurso);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (CapacidadeMaximaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		while(true) {
-			folha = menor(mapa.getFolhasMod());
-			percurso = mapa.getPercursos()[PontoAtual][folha];
-			try {
-				locomover(this.mapa, percurso.get(percurso.size() - 1), percurso);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (CapacidadeMaximaException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		while(mapa.getFolhasMod() != null) {
+			int folha = menor(mapa.getFolhasMod()); // procura a menor folha que ainda não foi visitada ou está em rota
+			List<Integer> percurso = seguirRamo(folha); // Traça o percurso pelo ramo até a folha
+			PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(folha);
+			vertice.emRota = true;
+			while(vertice.getvLixo() > 0) {
+				try {
+					locomover(this.mapa, percurso.get(percurso.size() - 1), percurso);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (CapacidadeMaximaException e) {
+					e.printStackTrace();
+				}
 			}
-			percurso = seguirRamo(folha);
-			percurso.reversed();
+			while(lixoArmazenado != capacidade && mapa.getFolhasMod() != null) {
+				folha = menor(mapa.getFolhasMod());
+				percurso = mapa.getPercursos()[PontoAtual][folha];
+				try {
+					locomover2(this.mapa, percurso.get(percurso.size() - 1), percurso);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CapacidadeMaximaException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				percurso = seguirRamo(folha);
+				percurso.reversed();
+				try {
+					locomover3(mapa, percurso.get(percurso.size() - 1), percurso);
+				} catch (InterruptedException | CapacidadeMaximaException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
@@ -158,6 +172,8 @@ public class CaminhaoLixo extends Carro{
 	public void locomover2(Bairro grafo, int destino, List<Integer> percurso) throws InterruptedException, CapacidadeMaximaException {
 		int a = 0, b = 1;
 		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
+		PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(destino);
+		vertice.emRota = true;
 		if(percurso != null) {
 			do {
 				avancar(grafo, a, b, percurso);
@@ -165,7 +181,7 @@ public class CaminhaoLixo extends Carro{
 					if(coletar() > 0) {
 						for (Integer i : mapa.getMst().mst[PontoAtual]) {
 							if(i > 0 && i != percurso.get(b+1)){
-								PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(i);
+								vertice = (PontoDeColeta) mapa.getVertices().get(i);
 								if(vertice.getvLixo() > 0) {
 									mapa.getFolhasMod().add(i); // marca o vértice anterior como folha da árvore
 								}
@@ -184,6 +200,8 @@ public class CaminhaoLixo extends Carro{
 	public void locomover3(Bairro grafo, int destino, List<Integer> percurso) throws InterruptedException, CapacidadeMaximaException {
 		int a = 0, b = 1;
 		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
+		PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(destino);
+		vertice.emRota = true;
 		if(percurso != null) {
 			do {
 				mapa.getFolhasMod().add(b + 1);
