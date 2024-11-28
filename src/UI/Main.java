@@ -5,31 +5,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import exceptions.CapacidadeMaximaException;
 import negócios.Bairro;
 import negócios.CaminhaoLixo;
 
 public class Main {
-
-	public static void main(String[] args) {
-		try {
-			Bairro grafo = Setup.setup();
-			int quantidadeFuncionarios = 3;
-			int quantidadeCaminhoes = 1;
-			
-			List<CaminhaoLixo> frota = new ArrayList<>();
-			int tempoTrabalho = 0;
-			frota.add(new CaminhaoLixo(quantidadeFuncionarios, 10.0, grafo));	
-			
-			do {
-	
-			}while(tempoTrabalho > 8);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
+//
+//	public static void main(String[] args) throws InterruptedException, CapacidadeMaximaException {
+//		try {
+//			Bairro grafo = Setup.setup();
+//			List<CaminhaoLixo> frota = new ArrayList<>();
+//			
+//			CaminhaoLixo caminhaoLixo = new CaminhaoLixo(3, 10, grafo);
+//			caminhaoLixo.s();
+//			
+//			
+//			
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//
 }

@@ -21,9 +21,9 @@ public class Bairro {
 		this.nome = nome;
 		this.w = w;
 		this.distancias = w;
-		this.mst = Gps.calcularMSTeFolhas(w);
-		percursos = Gps.camMin(this);
-		setFolhasMod(new ArrayList<Integer>(mst.folhas));
+//		this.mst = Gps.calcularMSTeFolhas(w);
+//		percursos = Gps.camMin(this);
+//		setFolhasMod(new ArrayList<Integer>(mst.folhas));
 	}
 	
 	public String getNome() {

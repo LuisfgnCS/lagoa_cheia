@@ -95,9 +95,7 @@ public class Carrocinha extends Carro {
 		if(percurso != null) {
 			do {
 				avancar(grafo, a, b, percurso);
-				if (capacidade > 0) {
 					coletar();
-				}
 			} while(b != this.destino);
 		}
 	}

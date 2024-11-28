@@ -29,7 +29,7 @@ public class PontoDeColeta extends Ponto{
 			nCachorros = 0;
 		}
 		
-		vLixo = (int)(Math.random() * 10) + 10;
+		vLixo = (int)(Math.random() * 20 - 10 + 1) + 10;
 	}
 	
 	public int getnCachorros() {

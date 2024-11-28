@@ -14,7 +14,7 @@ import negócios.PontoDeColeta;
 public class Setup {
 
 	@SuppressWarnings({ "null", "finally" })
-	public static Bairro setup() throws FileNotFoundException, IOException {
+	public static void main(String[] args) throws FileNotFoundException, IOException {
 		String caminho = "/home/ruanp/Documentos/grafo.txt";
 		int contador = 0;
 
@@ -49,13 +49,17 @@ public class Setup {
 				contador++;
 			}
 			grafo.setW(w);
-			return grafo;
-			
+			for(int i = 0 ; i < grafo.getW().length; i++) {
+				for(int j = 0; j < grafo.getW().length;j++) {
+					System.out.printf(grafo.getW()[i][j]+" ");
+				}
+				System.out.println();
+			}
 			
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
-		}finally {
-			return null;
+		}catch(ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
 		}
 
 	}
