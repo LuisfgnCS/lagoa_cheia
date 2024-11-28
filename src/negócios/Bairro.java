@@ -13,10 +13,9 @@ public class Bairro {
 	private int[][] distancias;
 	private Result mst;
 	
-	public Bairro(String nome, List<Ponto> vertices, int[][] w) {
+	public Bairro(String nome, int[][] w) {
 		super();
 		this.nome = nome;
-		this.vertices = vertices;
 		this.w = w;
 		this.distancias = w;
 		this.mst = Gps.calcularMSTeFolhas(w);

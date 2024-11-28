@@ -15,7 +15,6 @@ public class Setup {
 
 	@SuppressWarnings("null")
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		Bairro grafo = new Bairro();
 		String caminho = "/home/ruanp/Documentos/grafo.txt";
 		int contador = 0;
 
@@ -25,6 +24,7 @@ public class Setup {
 
 			linha = br.readLine();
 			int[][] w = new int[Integer.parseInt(linha)][Integer.parseInt(linha)];
+			Bairro grafo = new Bairro("Lagoa Cheia",w);
 
 			System.out.println(linha);
 			
@@ -49,9 +49,7 @@ public class Setup {
 				contador++;
 			}
 			grafo.setW(w);
-			for (Ponto vertice : grafo.getVertices()) {
-				System.out.println(vertice);
-			}
+			
 			
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
