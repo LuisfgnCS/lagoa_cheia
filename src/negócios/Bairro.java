@@ -23,10 +23,13 @@ public class Bairro {
 		percursos = Gps.camMin(this);
 	}
 	
-	
 	public String getNome() {
 		return nome;
 	}
+	public Result getMst() {
+		return mst;
+	}
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
@@ -51,4 +54,5 @@ public class Bairro {
 	public List<Integer>[][] getPercursos() {
 		return percursos;
 	}
+
 }

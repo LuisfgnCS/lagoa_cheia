@@ -1,10 +1,14 @@
 package negócios;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CaminhaoLixo extends Carro{
 	private int nFuncionarios; 
 	private double capacidade; 
+	private int compressoes;
 	private Bairro mapa;
 	
 	public CaminhaoLixo( int nFuncionarios, double capacidade) {
@@ -13,15 +17,17 @@ public class CaminhaoLixo extends Carro{
 		this.setCapacidade(capacidade);     
 	}
 
-	public int coletar(Bairro grafo) throws InterruptedException{
-		PontoDeColeta pontodecoleta = (PontoDeColeta) grafo.getVertices().get(PontoAtual);
-		int tempo = pontodecoleta.getvLixo() / this.nFuncionarios;
+	public int coletar() throws InterruptedException{
+		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
+		int lixo = pontodecoleta.getvLixo();
+//		if(capacidade - lixo < 0)
+		int tempo = lixo / this.nFuncionarios;
 		if(lixoRasgado(pontodecoleta)) {
 			tempo = tempo * 2;
 		}
 		
 		if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() > 0) {
-			chamarControle(grafo);
+			chamarControle(mapa);
 		}
 		return tempo;
 	}
@@ -34,7 +40,6 @@ public class CaminhaoLixo extends Carro{
 		}else if(pColeta.getnCachorros() == 0 && pColeta.getnGatos() == 0 && pColeta.getnRatos() > 0) {
 			return true;
 		}
-		 
 		return false;
 	}
 	
@@ -49,6 +54,7 @@ public class CaminhaoLixo extends Carro{
 		if(percurso != null) {
 			do {
 				avancar(grafo, a, b, percurso);
+				coletar();
 			} while(b != destino);
 		}
 	}
@@ -63,6 +69,26 @@ public class CaminhaoLixo extends Carro{
 
 	@Override
 	public void run() {
-		
+		int folha = Collections.min(mapa.getMst().folhas, Comparator.comparing(p -> mapa.getDistancias()[PontoAtual][p])); // procura a folha mais próxima
+		List<Integer> percurso = seguirRamo(folha); // Traça o percurso pelo ramo até a folha
+		try {
+			locomover(this.mapa, percurso.get(percurso.size() - 1), percurso); // tenta se locomover até ele
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	private List<Integer> seguirRamo(int folha) {
+		int[] pais = mapa.getMst().pais;
+		LinkedList<Integer> caminho = null;
+		Integer aux = folha;
+		while(aux != -1) {
+			caminho.add(aux);
+			aux = pais[aux];
+		}
+		return caminho;
 	}
 }
