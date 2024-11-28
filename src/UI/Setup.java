@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 import negócios.Aterro;
 import negócios.Bairro;
@@ -14,7 +15,7 @@ import negócios.PontoDeColeta;
 public class Setup {
 
 	@SuppressWarnings({ "null", "finally" })
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static Bairro setup() throws FileNotFoundException, IOException {
 		String caminho = "/home/ruanp/Documentos/grafo.txt";
 		int contador = 0;
 
@@ -49,6 +50,7 @@ public class Setup {
 				contador++;
 			}
 			grafo.setW(w);
+			grafo.construirMST();
 			for(int i = 0 ; i < grafo.getW().length; i++) {
 				for(int j = 0; j < grafo.getW().length;j++) {
 					System.out.printf(grafo.getW()[i][j]+" ");
@@ -56,11 +58,18 @@ public class Setup {
 				System.out.println();
 			}
 			
+			  for (int[] mst : grafo.getDistancias()) {
+				  System.out.println(Arrays.toString(mst));
+			  }
+
+			return grafo;
+			
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}catch(ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
+		return null;
 
 	}
 }

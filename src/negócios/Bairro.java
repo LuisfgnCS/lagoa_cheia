@@ -20,10 +20,6 @@ public class Bairro {
 		super();
 		this.nome = nome;
 		this.w = w;
-		this.distancias = w;
-//		this.mst = Gps.calcularMSTeFolhas(w);
-//		percursos = Gps.camMin(this);
-//		setFolhasMod(new ArrayList<Integer>(mst.folhas));
 	}
 	
 	public String getNome() {
@@ -47,6 +43,17 @@ public class Bairro {
 	}
 	public void setW(int[][] w) {
 		this.w = w;
+	}
+	
+	public void construirMST() {
+	    this.distancias = new int[w.length][w[0].length];
+	    for (int i = 0; i < w.length; i++) {
+	        for (int j = 0; j < w[0].length; j++) {
+	            distancias[i][j] = w[i][j];
+	        }
+	    }		this.mst = Gps.calcularMSTeFolhas(w);
+		percursos = Gps.camMin(this);
+		setFolhasMod(new ArrayList<Integer>(mst.folhas));
 	}
 
 

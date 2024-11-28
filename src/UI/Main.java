@@ -10,24 +10,22 @@ import negócios.Bairro;
 import negócios.CaminhaoLixo;
 
 public class Main {
-//
-//	public static void main(String[] args) throws InterruptedException, CapacidadeMaximaException {
-//		try {
-//			Bairro grafo = Setup.setup();
-//			List<CaminhaoLixo> frota = new ArrayList<>();
-//			
-//			CaminhaoLixo caminhaoLixo = new CaminhaoLixo(3, 10, grafo);
-//			caminhaoLixo.s();
-//			
-//			
-//			
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-//
+
+	public static void main(String[] args) throws InterruptedException, CapacidadeMaximaException {
+		try {
+			Bairro grafo = Setup.setup();
+			
+			CaminhaoLixo caminhaoLixo = new CaminhaoLixo(3, 10, grafo);
+			caminhaoLixo.start();
+			
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }
