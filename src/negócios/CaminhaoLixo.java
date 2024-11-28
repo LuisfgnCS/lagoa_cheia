@@ -5,6 +5,7 @@ import java.util.List;
 public class CaminhaoLixo extends Carro{
 	private int nFuncionarios; 
 	private double capacidade; 
+	private Bairro mapa;
 	
 	public CaminhaoLixo( int nFuncionarios, double capacidade) {
 		super(0);
@@ -62,7 +63,6 @@ public class CaminhaoLixo extends Carro{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		
 	}
 }
