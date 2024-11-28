@@ -36,6 +36,4 @@ public abstract class Carro extends Thread{
         }
         return menor;
 	}
-	
-	public abstract void retornar() throws InterruptedException, CapacidadeMaximaException;
 }
