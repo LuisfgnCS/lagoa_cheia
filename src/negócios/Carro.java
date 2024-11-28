@@ -2,6 +2,8 @@ package negócios;
 
 import java.util.List;
 
+import exceptions.CapacidadeMaximaException;
+
 public abstract class Carro extends Thread{
 	protected int PontoAtual;
 	protected Bairro mapa;
@@ -12,20 +14,20 @@ public abstract class Carro extends Thread{
 		this.mapa = mapa;
 	}
 	
-	public abstract void locomover(Bairro grafo, int destino, List<Integer> percursos) throws InterruptedException; 
+	public abstract void locomover(Bairro grafo, int destino, List<Integer> percursos) throws InterruptedException, CapacidadeMaximaException; 
 	
 	public int avancar(Bairro grafo, int a, int b, List<Integer> percurso) throws InterruptedException {
 		this.PontoAtual = -1;
-		Thread.sleep(grafo.getW()[percurso.get(a)][percurso.get(b)]);
+		Thread.sleep(grafo.getW()[percurso.get(a)][percurso.get(b)] * 1000);
 		this.PontoAtual = percurso.get(b);
 		a++;
 		b++;
 		return grafo.getW()[percurso.get(a)][percurso.get(b)];
 	}
 	
-	public int menor(int[] valores) {
-		int menor = valores[0];
-        for (int num : valores) {
+	public int menor(List<Integer> folhas) {
+		int menor = folhas.get(0);
+        for (int num : folhas) {
             if (mapa.getDistancias()[PontoAtual][num] < mapa.getDistancias()[PontoAtual][menor]) {
             	if(!mapa.getVertices().get(num).emRota) {
             		menor = num;
@@ -34,4 +36,6 @@ public abstract class Carro extends Thread{
         }
         return menor;
 	}
+	
+	public abstract void retornar() throws InterruptedException, CapacidadeMaximaException;
 }

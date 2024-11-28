@@ -1,6 +1,7 @@
 package negócios;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import negócios.Gps.Result;
@@ -12,6 +13,8 @@ public class Bairro {
 	public List<Integer>[][] percursos;
 	private int[][] distancias;
 	private Result mst;
+	private List<Integer> folhasMod;
+	
 	
 	public Bairro(String nome, int[][] w) {
 		super();
@@ -20,6 +23,7 @@ public class Bairro {
 		this.distancias = w;
 		this.mst = Gps.calcularMSTeFolhas(w);
 		percursos = Gps.camMin(this);
+		setFolhasMod(new ArrayList<Integer>(mst.folhas));
 	}
 	
 	public String getNome() {
@@ -52,6 +56,14 @@ public class Bairro {
 
 	public List<Integer>[][] getPercursos() {
 		return percursos;
+	}
+
+	public List<Integer> getFolhasMod() {
+		return folhasMod;
+	}
+
+	public void setFolhasMod(List<Integer> folhasMod) {
+		this.folhasMod = folhasMod;
 	}
 
 }
