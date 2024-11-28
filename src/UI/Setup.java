@@ -9,6 +9,7 @@ import java.util.Arrays;
 import negócios.Aterro;
 import negócios.Bairro;
 import negócios.CentroDeZoonoses;
+import negócios.Gps;
 import negócios.Ponto;
 import negócios.PontoDeColeta;
 
@@ -45,7 +46,7 @@ public class Setup {
 				String[] linhaMatriz = linha.split(" ");
 
 				for (int i = 0; i < linhaMatriz.length; i++) {
-					w[contador][i] = Integer.parseInt(linhaMatriz[i]);
+					w[contador][i] = Integer.parseInt(linhaMatriz[i]) == -1 ? Gps.INF : Integer.parseInt(linhaMatriz[i]);
 				}
 				contador++;
 			}

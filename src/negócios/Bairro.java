@@ -51,12 +51,20 @@ public class Bairro {
 	        for (int j = 0; j < w[0].length; j++) {
 	            distancias[i][j] = w[i][j];
 	        }
-	    }		this.mst = Gps.calcularMSTeFolhas(w);
+	    }		
+	    this.mst = Gps.calcularMSTeFolhas(w);
 		percursos = Gps.camMin(this);
 		setFolhasMod(new ArrayList<Integer>(mst.folhas));
 	}
 
-
+	public int getDistanciasValor(int i, int j) {
+		return distancias[i][j];
+	}
+	
+	public void setDistanciaValor(int i, int j,int valor) {
+		distancias[i][j] = valor;
+	}
+	
 	public int[][] getDistancias() {
 		return distancias;
 	}

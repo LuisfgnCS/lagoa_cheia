@@ -87,12 +87,12 @@ public class CaminhaoLixo extends Carro{
 	@Override
 	public void locomover(Bairro grafo, int destino, List<Integer> percurso) throws InterruptedException, CapacidadeMaximaException {
 		int a = 0, b = 1;
+		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
 		PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(destino);
 		vertice.emRota = true;
 		if(percurso != null) {
 			do {
 				avancar(grafo, a, b, percurso);
-				PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
 				if(capacidade > 0) {
 					coletar();
 				}
