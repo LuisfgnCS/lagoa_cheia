@@ -28,7 +28,7 @@ public abstract class Gps {
 		for (int k = 0; k < grafo.getVertices().size(); k++) {
 			for (int i = 0; i < grafo.getVertices().size(); i++) {
 				for (int j = 0; j < grafo.getVertices().size(); j++) {
-					if(grafo.getDistancias()[i][j] > grafo.getDistancias()[i][k] + grafo.getDistancias()[k][j]) {
+					if(grafo.getDistancias()[i][k] != INF && grafo.getDistancias()[k][j] != INF && grafo.getDistancias()[i][j] > grafo.getDistancias()[i][k] + grafo.getDistancias()[k][j]) {
 						System.out.println(grafo.getDistancias()[k][j] + " + " + grafo.getDistancias()[i][k] + " = " + grafo.getDistancias()[i][j]);
 						grafo.getDistancias()[i][j] = grafo.getDistancias()[i][k] + grafo.getDistancias()[k][j];
 						Pm[i][j].clear();
@@ -133,4 +133,50 @@ public abstract class Gps {
 //        System.out.println("Folhas da MST:");
 //        System.out.println(resultado.folhas);
 //    }
+    
+//    
+//    
+//    
+//
+//        public static void floydWarshall(int[][] graph) {
+//            int n = graph.length; // Número de vértices
+//            int[][] dist = new int[n][n]; // Matriz de distâncias
+//
+//            // Inicializa a matriz de distâncias com os valores do grafo
+//            for (int i = 0; i < n; i++) {
+//                for (int j = 0; j < n; j++) {
+//                    dist[i][j] = graph[i][j];
+//                }
+//            }
+//
+//            // Aplica o algoritmo de Floyd-Warshall
+//            for (int k = 0; k < n; k++) {
+//                for (int i = 0; i < n; i++) {
+//                    for (int j = 0; j < n; j++) {
+//                        // Atualiza a distância se o caminho pelo vértice k é mais curto
+//                        if (dist[i][k] != INF && dist[k][j] != INF && dist[i][j] > dist[i][k] + dist[k][j]) {
+//                            dist[i][j] = dist[i][k] + dist[k][j];
+//                        }
+//                    }
+//                }
+//            }
+//
+//            // Exibe a matriz final de distâncias
+//            printSolution(dist);
+//        }
+//
+//        private static void printSolution(int[][] dist) {
+//            System.out.println("Matriz de distâncias mínimas entre todos os pares de vértices:");
+//            for (int i = 0; i < dist.length; i++) {
+//                for (int j = 0; j < dist.length; j++) {
+//                    if (dist[i][j] == INF) {
+//                        System.out.print("INF ");
+//                    } else {
+//                        System.out.print(dist[i][j] + " ");
+//                    }
+//                }
+//                System.out.println();
+//            }
+//        }
+//    
 }

@@ -52,17 +52,33 @@ public class Setup {
 			}
 			grafo.setW(w);
 			grafo.construirMST();
+			System.out.println();
+			System.out.println("Grafo:");
 			for(int i = 0 ; i < grafo.getW().length; i++) {
 				for(int j = 0; j < grafo.getW().length;j++) {
-					System.out.printf(grafo.getW()[i][j]+" ");
+					if(grafo.getW()[i][j] != Gps.INF) {
+						System.out.printf(grafo.getW()[i][j]+" ");
+					}else {
+						System.out.printf("* ");
+					}
 				}
 				System.out.println();
 			}
 			
-			  for (int[] mst : grafo.getDistancias()) {
+//			  for (int[] ws: w) {
+//				  System.out.println(Arrays.toString(ws));
+//			  }
+			System.out.println();
+			  System.out.println("Distancias:");
+			  for (int[] dist : grafo.getDistancias()) {
+				  System.out.println(Arrays.toString(dist));
+			  }
+			  System.out.println();
+			  System.out.println("MST:");
+			  for (int[] mst : grafo.getMst().mst) {
 				  System.out.println(Arrays.toString(mst));
 			  }
-
+			  
 			return grafo;
 			
 		} catch (IOException e) {
