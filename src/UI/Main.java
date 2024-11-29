@@ -16,7 +16,6 @@ public class Main {
 			Bairro grafo = Setup.setup();
 			
 			CaminhaoLixo caminhaoLixo = new CaminhaoLixo(3, 10, grafo);
-			caminhaoLixo.start();
 			
 			
 		} catch (FileNotFoundException e) {

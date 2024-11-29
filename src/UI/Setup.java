@@ -17,7 +17,7 @@ public class Setup {
 
 	@SuppressWarnings({ "null", "finally" })
 	public static Bairro setup() throws FileNotFoundException, IOException {
-		String caminho = "/home/ruanp/Documentos/grafo.txt";
+		String caminho = "C:/Users/Softex/Downloads/grafo.txt";
 		int contador = 0;
 
 		try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {

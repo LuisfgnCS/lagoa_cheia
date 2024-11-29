@@ -29,6 +29,7 @@ public abstract class Gps {
 			for (int i = 0; i < grafo.getVertices().size(); i++) {
 				for (int j = 0; j < grafo.getVertices().size(); j++) {
 					if(grafo.getDistancias()[i][j] > grafo.getDistancias()[i][k] + grafo.getDistancias()[k][j]) {
+						System.out.println(grafo.getDistancias()[k][j] + " + " + grafo.getDistancias()[i][k] + " = " + grafo.getDistancias()[i][j]);
 						grafo.getDistancias()[i][j] = grafo.getDistancias()[i][k] + grafo.getDistancias()[k][j];
 						Pm[i][j].clear();
 						Pm[i][j].addAll(Pm[i][k]);
@@ -86,7 +87,6 @@ public abstract class Gps {
                 folhas.add(i);
             }
         }
-
         return new Result(mst, folhas, pai);
     }
 

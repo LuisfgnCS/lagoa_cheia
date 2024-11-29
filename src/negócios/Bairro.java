@@ -49,7 +49,9 @@ public class Bairro {
 	    this.distancias = new int[w.length][w[0].length];
 	    for (int i = 0; i < w.length; i++) {
 	        for (int j = 0; j < w[0].length; j++) {
+	        	System.out.println(w[i][j] + " -> " + distancias[i][j]);
 	            distancias[i][j] = w[i][j];
+	            
 	        }
 	    }		
 	    this.mst = Gps.calcularMSTeFolhas(w);

@@ -1,7 +1,5 @@
 package negócios;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,10 +46,7 @@ public class CaminhaoLixo extends Carro{
 	}
 	
 	private boolean lixoRasgado(PontoDeColeta pColeta) {
-		if(pColeta.getnCachorros() > 0 ^ pColeta.getnGatos() > 0 ^ pColeta.getnRatos() > 0) {
-			return true;
-		}
-		return false;
+		return (pColeta.getnCachorros() > 0 ? 1 : 0) + (pColeta.getnGatos() > 0 ? 1 : 0) + (pColeta.getnRatos() > 0 ? 1 : 0) == 1;
 	}
 	
 	public void comprimir() {
