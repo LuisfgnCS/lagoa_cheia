@@ -48,11 +48,7 @@ public class CaminhaoLixo extends Carro{
 	}
 	
 	private boolean lixoRasgado(PontoDeColeta pColeta) {
-		if(pColeta.getnCachorros() > 0 && pColeta.getnGatos() == 0 && pColeta.getnRatos() == 0) {
-			return true;
-		}else if(pColeta.getnCachorros() == 0 && pColeta.getnGatos() > 0 && pColeta.getnRatos() == 0) {
-			return true;
-		}else if(pColeta.getnCachorros() == 0 && pColeta.getnGatos() == 0 && pColeta.getnRatos() > 0) {
+		if(pColeta.getnCachorros() > 0 ^ pColeta.getnGatos() > 0 ^ pColeta.getnRatos() > 0) {
 			return true;
 		}
 		return false;
