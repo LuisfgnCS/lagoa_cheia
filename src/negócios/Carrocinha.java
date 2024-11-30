@@ -8,7 +8,7 @@ import exceptions.CapacidadeMaximaException;
 public class Carrocinha extends Carro {
 	
 	Boolean ocupada = false;
-	int destino;
+	int destino = 0;
 	int capacidade = 5;
 	public Carrocinha(int pontoAtual, Bairro mapa) {
 		super(pontoAtual, mapa);
@@ -25,7 +25,6 @@ public class Carrocinha extends Carro {
 	public void coletar() throws InterruptedException, CapacidadeMaximaException{
 		if(PontoAtual != mapa.getVertices().size() - 1) {
 			PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
-		
 			if(capacidade > 0) {
 				if(pontodecoleta.getnCachorros()  + pontodecoleta.getnGatos() > 0) {
 					if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() <=5) {
@@ -55,27 +54,48 @@ public class Carrocinha extends Carro {
 				chamarControle(mapa,destino);
 				this.destino = mapa.getVertices().size() - 1;
 				percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
-				locomover(mapa,destino,percurso);
+				percorrer(percurso, 0);
 				throw new CapacidadeMaximaException();
 			}
 		}
 	}
 	
-	public void chamarControle(Bairro grafo,int destino) throws InterruptedException {
+	public static void chamarControle(Bairro grafo,int destino) throws InterruptedException {
 		CentroDeZoonoses cz = (CentroDeZoonoses)grafo.getVertices().get(grafo.getVertices().size() -1);
-		cz.mandarCarrocinha(grafo,destino);
+		System.out.println("Mandando carrocinha para " + destino);
+		cz.mandarCarrocinha(grafo, destino);
 	}
 
+	public void percorrer(List<Integer> percurso, int tipo) throws InterruptedException, CapacidadeMaximaException {
+		int destino = percurso.size() - 1;
+		System.out.println("Rota da carrocinha: " + percurso.toString());
+		int a, b;
+		for(int i = 1; i <= destino; i++) {
+			PontoAtual = -1;
+			a = percurso.get(i - 1);
+			b = percurso.get(i);
+			System.out.println("Saindo do ponto " + a + " Para o ponto " + b);
+			int tempoAB = mapa.getW()[a][b];
+			Thread.sleep(tempoAB * 1000);
+			this.PontoAtual = b;
+			System.out.println("Chegou no ponto " + b);
+			if(tipo != 0) {
+				coletar();
+			}
+		}
+	}
+	
 	
 	@Override
 	public void run() {
+		System.out.println(this.destino);
 		List<Integer> percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
 		try {
-			locomover(mapa,destino,percurso);
+			percorrer(percurso, 1);
 			ocupada = true;
 			this.destino = mapa.getVertices().size() - 1;
 			percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
-			locomover(mapa,destino,percurso);
+			percorrer(percurso, 1);
 			capacidade = 5;
 			ocupada = false;
 		} catch (InterruptedException e) {

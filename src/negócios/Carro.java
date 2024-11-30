@@ -25,6 +25,8 @@ public abstract class Carro extends Thread{
 		return grafo.getW()[percurso.get(a)][percurso.get(b)];
 	}
 	
+	
+	
 	public int menor(List<Integer> folhas) {
 		int menorElemento = -1;
 		try {

@@ -8,12 +8,14 @@ public class CentroDeZoonoses extends Ponto{
 	
 	public CentroDeZoonoses(Bairro grafo) {
 		for(int i = 0; i<= 2;i ++) {
-			carrocinhas.add(new Carrocinha(grafo.getVertices().size() - 1, grafo));
+			carrocinhas.add(new Carrocinha(grafo.getVertices().size(), grafo));
 		}
 	}
 	
 	public void mandarCarrocinha(Bairro grafo,int destino) throws InterruptedException {
 		Carrocinha carrocinha = procurarCarrocinhaDisponivel();
+		carrocinha.destino = destino;
+		System.out.println(carrocinha.PontoAtual);
 		List<Integer> percurso = new ArrayList<>(grafo.getPercursos()[carrocinha.PontoAtual][destino]);
 		carrocinha.run();
 	}
