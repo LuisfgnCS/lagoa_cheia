@@ -2,6 +2,7 @@ package negócios;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import exceptions.CapacidadeMaximaException;
 
@@ -11,12 +12,15 @@ public class CaminhaoLixo extends Carro{
 	private double lixoArmazenado = 0;
 	private double lixoComprimido = 0;
 	private int compressoes = 3;
-	private int tempoGasto = 0;
+	private int tempoGastoPercorrendoCaminho = 0;
+	private int tempoGastoColetandoLixo = 0;
+	private final CountDownLatch latch;
 	
-	public CaminhaoLixo( int nFuncionarios, double capacidade, Bairro mapa) {
+	public CaminhaoLixo( int nFuncionarios, double capacidade, Bairro mapa,CountDownLatch latch) {
 		super(0, mapa);
 		this.nFuncionarios = nFuncionarios; 
 		this.setCapacidade(capacidade);   
+		this.latch = latch;
 	}
 
 	public int coletar() throws InterruptedException, CapacidadeMaximaException{
@@ -58,7 +62,7 @@ public class CaminhaoLixo extends Carro{
 						throw new CapacidadeMaximaException();
 					}
 				}
-				tempoGasto += tempo;
+				tempoGastoColetandoLixo += tempo;
 			}while(lixo > 0);
 		}
 		mapa.situacaoPonto(PontoAtual);
@@ -68,12 +72,12 @@ public class CaminhaoLixo extends Carro{
 	private boolean lixoRasgado(PontoDeColeta pColeta, int ponto) {
 		if(pColeta.getnCachorros()  + pColeta.getnGatos() + pColeta.getnRatos() > 0) {
 			CentroDeZoonoses zoonoses = (CentroDeZoonoses) mapa.getVertices().get(mapa.getVertices().size() - 1);
-			try {
-				zoonoses.mandarCarrocinha(mapa, ponto);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				zoonoses.mandarCarrocinha(mapa, ponto);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		return (pColeta.getnCachorros() > 0 ? 1 : 0) + (pColeta.getnGatos() > 0 ? 1 : 0) + (pColeta.getnRatos() > 0 ? 1 : 0) == 1;
 	}
@@ -174,8 +178,9 @@ public class CaminhaoLixo extends Carro{
 				}
 			}
 		}
-		System.out.println("Tempo para recolher todo lixo: " + tempoGasto + " minutos");
-	}
+		System.out.println("Tempo para recolher todo lixo: " + tempoGastoColetandoLixo + " minutos");
+		System.out.println("Tempo para percorrer caminho: " + tempoGastoPercorrendoCaminho + " minutos");
+		latch.countDown();	}
 	
 	
 	
@@ -207,7 +212,7 @@ public class CaminhaoLixo extends Carro{
 			b = percurso.get(i);
 			System.out.println("Saindo do ponto " + a + " Para o ponto " + b);
 			int tempoAB = mapa.getW()[a][b];
-			tempoGasto = getTempoGasto() + tempoAB;
+			tempoGastoPercorrendoCaminho = getTempoGastoPercorrendoCaminho() + tempoAB;
 			Thread.sleep(tempoAB * 1000);
 			this.PontoAtual = b;
 			System.out.println("Chegou no ponto " + b);
@@ -245,7 +250,30 @@ public class CaminhaoLixo extends Carro{
 		return -1;
 	}
 	
-	public int getTempoGasto() {
-		return tempoGasto;
+	public void setFuncionarios(int nFuncionarios) {
+		this.nFuncionarios = nFuncionarios;
 	}
+	
+	public int getFuncionarios() {
+		return nFuncionarios;
+	}
+
+
+	public int getTempoGastoPercorrendoCaminho() {
+		return tempoGastoPercorrendoCaminho;
+	}
+
+	public void setTempoGastoPercorrendoCaminho(int tempoGastoPercorrendoCaminho) {
+		this.tempoGastoPercorrendoCaminho = tempoGastoPercorrendoCaminho;
+	}
+
+	public int getTempoGastoColetandoLixo() {
+		return tempoGastoColetandoLixo;
+	}
+
+	public void setTempoGastoColetandoLixo(int tempoGastoColetandoLixo) {
+		this.tempoGastoColetandoLixo = tempoGastoColetandoLixo;
+	}
+
+
 }
