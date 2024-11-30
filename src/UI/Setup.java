@@ -73,6 +73,7 @@ public class Setup {
 			  for (int[] dist : grafo.getDistancias()) {
 				  System.out.println(Arrays.toString(dist));
 			  }
+			  
 			  System.out.println();
 			  System.out.println("MST:");
 			  for (int[] mst : grafo.getMst().mst) {

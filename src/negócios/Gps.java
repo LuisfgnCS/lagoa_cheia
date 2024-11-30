@@ -2,6 +2,7 @@ package negócios;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class Gps {
@@ -33,26 +34,40 @@ public abstract class Gps {
 						grafo.getDistancias()[i][j] = grafo.getDistancias()[i][k] + grafo.getDistancias()[k][j];
 						Pm[i][j].clear();
 						Pm[i][j].addAll(Pm[i][k]);
-						Pm[i][j].addAll(Pm[k][j]);
+						Pm[i][j].addAll(Pm[k][j].subList(1, Pm[k][j].size()));
 					}
 				}
 			}
 		}
+//		System.out.println(grafo.getDistancias()[2][1]);
+//		System.out.println(grafo.getDistancias()[1][3]);
+		System.out.println(Pm[0][2].toString());
 		return Pm;
+		
 	}
 	
     public static final int INF = Integer.MAX_VALUE;
 
-    public static Result calcularMSTeFolhas(int[][] grafo) {
-        int n = grafo.length;
+    public static Result calcularMSTeFolhas(int[][] w) {
+        int n = w.length;
+        int[][] grafo = new int[n][n];
         int[] chave = new int[n];
         boolean[] naMST = new boolean[n];
         int[] pai = new int[n];
         int[][] mst = new int[n][n];
         List<Integer> folhas = new ArrayList<>();
-
+        
+        for (int i = 0; i < n - 1; i++) {
+        	Arrays.fill(grafo[i], 0);
+		}
         Arrays.fill(chave, INF);
         Arrays.fill(pai, -1);
+        
+        for (int i = 0; i < n - 1; i++) {
+			for (int j = 0; j < n - 1; j++) {
+				grafo[i][j] = w[i][j];
+			}
+		}
 
         chave[0] = 0;
 
@@ -134,10 +149,7 @@ public abstract class Gps {
 //        System.out.println(resultado.folhas);
 //    }
     
-//    
-//    
-//    
-//
+    
 //        public static void floydWarshall(int[][] graph) {
 //            int n = graph.length; // Número de vértices
 //            int[][] dist = new int[n][n]; // Matriz de distâncias
@@ -178,5 +190,5 @@ public abstract class Gps {
 //                System.out.println();
 //            }
 //        }
-//    
+    
 }

@@ -9,7 +9,9 @@ public class CaminhaoLixo extends Carro{
 	private int nFuncionarios; 
 	private double capacidade; 
 	private double lixoArmazenado = 0;
+	private double lixoComprimido = 0;
 	private int compressoes = 3;
+	private int tempoGasto = 0;
 	
 	public CaminhaoLixo( int nFuncionarios, double capacidade, Bairro mapa) {
 		super(0, mapa);
@@ -18,30 +20,45 @@ public class CaminhaoLixo extends Carro{
 	}
 
 	public int coletar() throws InterruptedException, CapacidadeMaximaException{
-		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
-		int lixo = pontodecoleta.getvLixo();
 		int tempo = 0;
-		while(lixo > 0){
-			if(capacidade - lixoArmazenado - lixo > 0){
-				tempo = lixo / this.nFuncionarios;
-				if(lixoRasgado(pontodecoleta)) {
-					tempo = tempo * 2;
+		int lixo;
+		if(PontoAtual != 0) {
+			PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
+			do{
+				lixo = pontodecoleta.getvLixo();
+				System.out.println("Lixo no local: " + lixo);
+				System.out.println("Capacidade restante do caminhão: " + String.format("%.2f", capacidade - lixoArmazenado));
+				if(capacidade - lixoArmazenado - lixo > 0){
+					tempo = lixo / this.nFuncionarios;
+					if(lixoRasgado(pontodecoleta)) {
+						tempo = tempo * 2;
+					}
+					Thread.sleep(tempo * 1000);
+					lixoArmazenado += lixo;
+					pontodecoleta.setvLixo(0);
+					System.out.println("Lixo recolhido: " + lixo);
+				}else {
+					double lixoRecolhido = (capacidade - lixoArmazenado);
+					tempo = (int) (lixoRecolhido / nFuncionarios);
+					if(lixoRasgado(pontodecoleta)) {
+						tempo = tempo * 2;
+					}
+					Thread.sleep(tempo * 1000);
+					lixoArmazenado += lixoRecolhido;
+					pontodecoleta.setvLixo((int) (lixo - lixoRecolhido));
+					System.out.println("Lixo recolhido: " + String.format("%.2f", lixoRecolhido));
+					try {
+						comprimir();
+						compressoes--;
+						System.out.println("O volume do caminhão foi comprimido para " + String.format("%.2f", lixoArmazenado));
+					} catch (Exception e) {
+						retornar();
+						throw new CapacidadeMaximaException();
+					}
 				}
-			}else {
-				tempo = (int) ((capacidade - lixoArmazenado) / nFuncionarios);
-				if(lixoRasgado(pontodecoleta)) {
-					tempo = tempo * 2;
-				}
-				try {
-					comprimir();
-					compressoes--;
-				} catch (Exception e) {
-					retornar();
-					throw new CapacidadeMaximaException();
-				}
-			}
+				tempoGasto += tempo;
+			}while(lixo > 0);
 		}
-		Thread.sleep(tempo * 1000);
 		return tempo;
 	}
 	
@@ -49,24 +66,13 @@ public class CaminhaoLixo extends Carro{
 		return (pColeta.getnCachorros() > 0 ? 1 : 0) + (pColeta.getnGatos() > 0 ? 1 : 0) + (pColeta.getnRatos() > 0 ? 1 : 0) == 1;
 	}
 	
-	public void comprimir() {
-		switch (compressoes) {
-		case 3: {
-			lixoArmazenado = lixoArmazenado / 3;
-			break;
+	public void comprimir() throws Exception {
+		if(compressoes > 0) {
+			lixoComprimido += (lixoArmazenado - lixoComprimido) / 3;
+			lixoArmazenado = lixoComprimido;
 		}
-		case 2: {
-			lixoArmazenado = (lixoArmazenado * 2 / 3) / 3;
-			break;
-		}
-		case 1: {
-			lixoArmazenado = (lixoArmazenado * 4 / 9) / 3;
-			break;
-		}
-		case 0:
-			break;
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + compressoes);
+		else {
+			throw new Exception();
 		}
 	}
 	
@@ -77,20 +83,24 @@ public class CaminhaoLixo extends Carro{
 	
 	@Override
 	public void locomover(Bairro grafo, int destino, List<Integer> percurso) throws InterruptedException, CapacidadeMaximaException {
-		int a = 0, b = 1;
-		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
-		PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(destino);
+		Ponto vertice = mapa.getVertices().get(destino);
 		vertice.emRota = true;
-		if(percurso != null) {
-			do {
+		int a = 0, b = 1;
+		if(percurso.size() > 1) {
+			while(b != destino) {
 				avancar(grafo, a, b, percurso);
+				a += 1;
+				b += 1;
 				if(capacidade > 0) {
 					coletar();
 				}
-				if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() > 0) {
-					chamarControle(mapa);
+				if(PontoAtual != 0) {
+					PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
+					if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() > 0) {
+						chamarControle(mapa);
+					}
 				}
-			} while(b != destino);
+			} 
 			mapa.getFolhasMod().remove(destino);
 		}
 	}
@@ -102,54 +112,68 @@ public class CaminhaoLixo extends Carro{
 	public void setCapacidade(double capacidade) {
 		this.capacidade = capacidade;
 	}
-
+	
 	@Override
 	public void run() {
-		while(mapa.getFolhasMod() != null) {
+		while(!mapa.getFolhasMod().isEmpty()) {
 			int folha = menor(mapa.getFolhasMod()); // procura a menor folha que ainda não foi visitada ou está em rota
-			List<Integer> percurso = seguirRamo(folha); // Traça o percurso pelo ramo até a folha
-			PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(folha);
-			vertice.emRota = true;
-			while(vertice.getvLixo() > 0) {
+			int iFolha = mapa.getFolhasMod().indexOf(folha);
+			List<Integer> percurso = seguirRamo(folha).reversed(); // Traça o percurso pelo ramo até a folha
+			PontoDeColeta destino = (PontoDeColeta) mapa.getVertices().get(folha);
+			destino.emRota = true;
+			while(destino.getvLixo() > 0) {
 				try {
-					locomover(this.mapa, percurso.get(percurso.size() - 1), percurso);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (CapacidadeMaximaException e) {
-					e.printStackTrace();
-				}
-			}
-			while(lixoArmazenado != capacidade && mapa.getFolhasMod() != null) {
-				folha = menor(mapa.getFolhasMod());
-				percurso = mapa.getPercursos()[PontoAtual][folha];
-				try {
-					locomover2(this.mapa, percurso.get(percurso.size() - 1), percurso);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (CapacidadeMaximaException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				percurso = seguirRamo(folha);
-				percurso.reversed();
-				try {
-					locomover3(mapa, percurso.get(percurso.size() - 1), percurso);
+					percorrer(percurso, 1);
 				} catch (InterruptedException | CapacidadeMaximaException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("O caminhão voltou para base pois a capacidade máxima foi atingida");
+				}
+				System.out.println("o lixo na folha ainda é de: " + destino.getvLixo());
+			}
+			System.out.println("número da folha: " + folha);
+			System.out.println("Indice da folha: " + iFolha);
+			System.out.println("Ramo completo.");
+			System.out.println("Vetor de folhas: " + mapa.getFolhasMod().toString());
+			mapa.getFolhasMod().remove(mapa.getFolhasMod().indexOf(folha));
+			System.out.println("Vetor de folhas: " + mapa.getFolhasMod().toString());
+			while(lixoArmazenado != capacidade && !mapa.getFolhasMod().isEmpty()) {
+				folha = menor(mapa.getFolhasMod());
+				iFolha = mapa.getFolhasMod().indexOf(folha);
+				if(folha != -1) {
+					percurso = mapa.getPercursos()[PontoAtual][folha];
+					try {
+						percorrer(percurso, 0);
+					} catch (InterruptedException | CapacidadeMaximaException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					percurso = seguirRamo(folha);
+					try {
+						percurso.remove(percurso.size()-1);
+					}catch (Exception e) {
+						// TODO: handle exception
+					}
+					try {
+						percorrer(percurso, 1);
+					} catch (InterruptedException | CapacidadeMaximaException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mapa.getFolhasMod().remove(iFolha);
 				}
 			}
 		}
+		System.out.println("Tempo para recolher todo lixo: " + tempoGasto + " minutos");
 	}
 	
+	
+	
 	public void retornar() throws InterruptedException, CapacidadeMaximaException {
-		locomover(mapa, 0, mapa.getPercursos()[PontoAtual][0]);
+		percorrer(mapa.getPercursos()[PontoAtual][0], 0);
 		lixoArmazenado = 0;
 		compressoes = 3;
 	}
 	
-	private List<Integer> seguirRamo(int folha) {
+	public List<Integer> seguirRamo(int folha) {
 		int[] pais = mapa.getMst().pais;
 		LinkedList<Integer> caminho = new LinkedList<>();
 		Integer aux = folha;
@@ -160,51 +184,56 @@ public class CaminhaoLixo extends Carro{
 		return caminho;
 	}
 	
-	public void locomover2(Bairro grafo, int destino, List<Integer> percurso) throws InterruptedException, CapacidadeMaximaException {
-		int a = 0, b = 1;
-		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
-		PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(destino);
-		vertice.emRota = true;
-		if(percurso != null) {
-			do {
-				avancar(grafo, a, b, percurso);
-				if(capacidade > 0) {
-					if(coletar() > 0) {
-						for (Integer i : mapa.getMst().mst[PontoAtual]) {
-							if(i > 0 && i != percurso.get(b+1)){
-								vertice = (PontoDeColeta) mapa.getVertices().get(i);
-								if(vertice.getvLixo() > 0) {
-									mapa.getFolhasMod().add(i); // marca o vértice anterior como folha da árvore
-								}
-							}
-						}
+	
+	public void percorrer(List<Integer> percurso, int tipo) throws InterruptedException, CapacidadeMaximaException {
+		int destino = percurso.size() - 1;
+		System.out.println("Rota do caminhão: " + percurso.toString());
+		int a, b;
+		for(int i = 1; i <= destino; i++) {
+			PontoAtual = -1;
+			a = percurso.get(i - 1);
+			b = percurso.get(i);
+			System.out.println("Saindo do ponto " + a + " Para o ponto " + b);
+			int tempoAB = mapa.getW()[a][b];
+			tempoGasto = getTempoGasto() + tempoAB;
+			Thread.sleep(tempoAB * 1000);
+			this.PontoAtual = b;
+			System.out.println("Chegou no ponto " + b);
+			if(tipo != 0) {
+				coletar();
+				if(tipo == 2) {
+					try {
+						mapa.getFolhasMod().add(buscarAntecessor(PontoAtual, percurso.get(i + 1)));
+					}catch (Exception e) {
+						break;
+					}
+					System.out.println("Nova folha adicionada: " + percurso.get(i + 1));
+				}
+				if(tipo == 3) {
+					PontoDeColeta aux = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
+					if(aux.getvLixo() == 0) {
+						break;
 					}
 				}
-				if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() > 0) {
-					chamarControle(mapa);
-				}
-			} while(b != destino);
-			mapa.getFolhasMod().remove(destino);
+			}
+		}
+		if(tipo == 3) {
+			mapa.getMst().folhas.add(PontoAtual);
 		}
 	}
-	
-	public void locomover3(Bairro grafo, int destino, List<Integer> percurso) throws InterruptedException, CapacidadeMaximaException {
-		int a = 0, b = 1;
-		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
-		PontoDeColeta vertice = (PontoDeColeta) mapa.getVertices().get(destino);
-		vertice.emRota = true;
-		if(percurso != null) {
-			do {
-				mapa.getFolhasMod().add(b + 1);
-				avancar(grafo, a, b, percurso);
-				if(capacidade > 0) {
-					coletar();
-				}
-				if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() > 0) {
-					chamarControle(mapa);
-				}
-			} while(b != destino);
-			mapa.getFolhasMod().remove(destino);
+
+	private int buscarAntecessor(int atual, int prox) {
+		int n = mapa.getW().length;
+		for(int i = 0; i < n; i++) {
+			int j = mapa.getMst().mst[atual][i];
+			if(j != atual && j > 0) {
+				return j;
+			}
 		}
+		return -1;
+	}
+	
+	public int getTempoGasto() {
+		return tempoGasto;
 	}
 }

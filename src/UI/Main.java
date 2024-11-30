@@ -11,20 +11,27 @@ import negócios.CaminhaoLixo;
 
 public class Main {
 
-	public static void main(String[] args) throws InterruptedException, CapacidadeMaximaException {
-		try {
-			Bairro grafo = Setup.setup();
-			
-			CaminhaoLixo caminhaoLixo = new CaminhaoLixo(3, 10, grafo);
-			
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void main(String[] args) throws InterruptedException, IOException {
+		Bairro grafo = Setup.setup();
+		
+		CaminhaoLixo caminhaoLixo = new CaminhaoLixo(3, 10, grafo);
+		caminhaoLixo.start();
+		Thread.sleep(5000);
+		CaminhaoLixo caminhaoLixo2 = new CaminhaoLixo(3, 10, grafo);
+		caminhaoLixo2.start();
+		
+//		List<Integer> percurso = caminhaoLixo.seguirRamo(3).reversed();
+//		System.out.println(percurso.toString());
+//		while(true) {
+//			try {
+//				caminhaoLixo.percorrer(percurso);
+//				
+//				System.out.println("tempo gasto: " + caminhaoLixo.getTempoGasto() + " minutos");
+//				break;
+//			} catch (CapacidadeMaximaException e) {
+//				System.out.println("tudo bem.");
+//			}
+//		}
 	}
 
 }

@@ -18,22 +18,26 @@ public abstract class Carro extends Thread{
 	
 	public int avancar(Bairro grafo, int a, int b, List<Integer> percurso) throws InterruptedException {
 		this.PontoAtual = -1;
+		System.out.println("Saindo do ponto " + a + " Para o ponto " + b);
 		Thread.sleep(grafo.getW()[percurso.get(a)][percurso.get(b)] * 1000);
 		this.PontoAtual = percurso.get(b);
-		a++;
-		b++;
+		System.out.println("Chegou no ponto " + b);
 		return grafo.getW()[percurso.get(a)][percurso.get(b)];
 	}
 	
 	public int menor(List<Integer> folhas) {
-		int menor = folhas.get(0);
-        for (int num : folhas) {
-            if (mapa.getDistancias()[PontoAtual][num] < mapa.getDistancias()[PontoAtual][menor]) {
-            	if(!mapa.getVertices().get(num).emRota) {
-            		menor = num;
-            	}
-            }
-        }
-        return menor;
+		int menorElemento = -1;
+		if(!folhas.isEmpty()) {
+			int menor = Gps.INF; 
+	        for (int num : folhas) {
+	            if (mapa.getDistancias()[PontoAtual][num] < menor) {
+	            	if(!mapa.getVertices().get(num).emRota) {
+	            		menor = mapa.getDistancias()[PontoAtual][num];
+	            		menorElemento = num;
+	            	}
+	            }
+	        }
+	        return menorElemento;
+		}else return -1;
 	}
 }
