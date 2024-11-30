@@ -71,13 +71,12 @@ public class CaminhaoLixo extends Carro{
 	
 	private boolean lixoRasgado(PontoDeColeta pColeta, int ponto) {
 		if(pColeta.getnCachorros()  + pColeta.getnGatos() + pColeta.getnRatos() > 0) {
-			CentroDeZoonoses zoonoses = (CentroDeZoonoses) mapa.getVertices().get(mapa.getVertices().size() - 1);
-//			try {
-//				zoonoses.mandarCarrocinha(mapa, ponto);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			try {
+				Carrocinha.chamarControle(mapa, ponto);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return (pColeta.getnCachorros() > 0 ? 1 : 0) + (pColeta.getnGatos() > 0 ? 1 : 0) + (pColeta.getnRatos() > 0 ? 1 : 0) == 1;
 	}

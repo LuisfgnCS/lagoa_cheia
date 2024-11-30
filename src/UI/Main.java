@@ -24,8 +24,8 @@ public class Main {
 		int tempoTotalGasto = 0;
 		
 		PontoDeColeta ponto = (PontoDeColeta) grafo.getVertices().get(1);
-		ponto.setnCachorros(4);
-		ponto.setnGatos(0);
+		ponto.setnCachorros(3);
+		ponto.setnGatos(6);
 		
 		System.out.println();
 		for (int j = 0; j < 5; j++) {

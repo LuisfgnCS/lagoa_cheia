@@ -34,17 +34,21 @@ public class Carrocinha extends Carro {
 					}else {
 						capacidade = 0;
 						int i = 1;
-						while(i <= pontodecoleta.getnCachorros()) {
+						int c = pontodecoleta.getnCachorros();
+						while(i <= c) {
 							pontodecoleta.setnCachorros(pontodecoleta.getnCachorros() - 1);
 							if(i == 5) {
 								break;
 							}
 							i++;
 						}
+						System.out.println("Número de cachorros recolhidos: " + i);
 						
-						for(int j = 0; j < 5 - i;j++) {
+						for(int j = 0; j <= 5 - i;j++) {
 							pontodecoleta.setnGatos(pontodecoleta.getnGatos() - 1);
 						}
+						
+						System.out.println("Número de gatos recolhidos: " + (5 - i));
 						}
 					}
 					
@@ -55,6 +59,8 @@ public class Carrocinha extends Carro {
 				this.destino = mapa.getVertices().size() - 1;
 				percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
 				percorrer(percurso, 0);
+				capacidade = 5;
+				ocupada = false;
 				throw new CapacidadeMaximaException();
 			}
 		}
@@ -62,7 +68,6 @@ public class Carrocinha extends Carro {
 	
 	public static void chamarControle(Bairro grafo,int destino) throws InterruptedException {
 		CentroDeZoonoses cz = (CentroDeZoonoses)grafo.getVertices().get(grafo.getVertices().size() -1);
-		System.out.println("Mandando carrocinha para " + destino);
 		cz.mandarCarrocinha(grafo, destino);
 	}
 
@@ -88,7 +93,6 @@ public class Carrocinha extends Carro {
 	
 	@Override
 	public void run() {
-		System.out.println(this.destino);
 		List<Integer> percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
 		try {
 			percorrer(percurso, 1);
