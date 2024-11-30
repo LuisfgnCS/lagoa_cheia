@@ -20,18 +20,6 @@ public class Main {
 		CaminhaoLixo caminhaoLixo2 = new CaminhaoLixo(3, 10, grafo);
 		caminhaoLixo2.start();
 		
-//		List<Integer> percurso = caminhaoLixo.seguirRamo(3).reversed();
-//		System.out.println(percurso.toString());
-//		while(true) {
-//			try {
-//				caminhaoLixo.percorrer(percurso);
-//				
-//				System.out.println("tempo gasto: " + caminhaoLixo.getTempoGasto() + " minutos");
-//				break;
-//			} catch (CapacidadeMaximaException e) {
-//				System.out.println("tudo bem.");
-//			}
-//		}
 	}
 
 }

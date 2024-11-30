@@ -27,17 +27,21 @@ public abstract class Carro extends Thread{
 	
 	public int menor(List<Integer> folhas) {
 		int menorElemento = -1;
-		if(!folhas.isEmpty()) {
-			int menor = Gps.INF; 
-	        for (int num : folhas) {
-	            if (mapa.getDistancias()[PontoAtual][num] < menor) {
-	            	if(!mapa.getVertices().get(num).emRota) {
-	            		menor = mapa.getDistancias()[PontoAtual][num];
-	            		menorElemento = num;
-	            	}
-	            }
-	        }
-	        return menorElemento;
-		}else return -1;
+		try {
+			if(!folhas.isEmpty()) {
+				int menor = Gps.INF; 
+		        for (int num : folhas) {
+		            if (mapa.getDistancias()[PontoAtual][num] < menor) {
+		            	if(!mapa.getVertices().get(num).emRota) {
+		            		menor = mapa.getDistancias()[PontoAtual][num];
+		            		menorElemento = num;
+		            	}
+		            }
+		        }
+		        return menorElemento;
+			}else return -1;
+		}catch (Exception e) {
+			return -1;
+		}
 	}
 }
