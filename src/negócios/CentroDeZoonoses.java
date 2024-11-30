@@ -28,4 +28,5 @@ public class CentroDeZoonoses extends Ponto{
 		}
 		return carrocinhaLivre;
 	}
+	
 }

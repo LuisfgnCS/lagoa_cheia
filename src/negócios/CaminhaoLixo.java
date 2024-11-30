@@ -30,8 +30,9 @@ public class CaminhaoLixo extends Carro{
 				System.out.println("Capacidade restante do caminhão: " + String.format("%.2f", capacidade - lixoArmazenado));
 				if(capacidade - lixoArmazenado - lixo > 0){
 					tempo = lixo / this.nFuncionarios;
-					if(lixoRasgado(pontodecoleta)) {
+					if(lixoRasgado(pontodecoleta, PontoAtual)) {
 						tempo = tempo * 2;
+						System.out.println("Animais encontrados no local. O lixo foi rasgado!");
 					}
 					Thread.sleep(tempo * 1000);
 					lixoArmazenado += lixo;
@@ -40,8 +41,9 @@ public class CaminhaoLixo extends Carro{
 				}else {
 					double lixoRecolhido = (capacidade - lixoArmazenado);
 					tempo = (int) (lixoRecolhido / nFuncionarios);
-					if(lixoRasgado(pontodecoleta)) {
+					if(lixoRasgado(pontodecoleta, PontoAtual)) {
 						tempo = tempo * 2;
+						System.out.println("Animais encontrados no local. O lixo foi rasgado!");
 					}
 					Thread.sleep(tempo * 1000);
 					lixoArmazenado += lixoRecolhido;
@@ -59,10 +61,20 @@ public class CaminhaoLixo extends Carro{
 				tempoGasto += tempo;
 			}while(lixo > 0);
 		}
+		mapa.situacaoPonto(PontoAtual);
 		return tempo;
 	}
 	
-	private boolean lixoRasgado(PontoDeColeta pColeta) {
+	private boolean lixoRasgado(PontoDeColeta pColeta, int ponto) {
+		if(pColeta.getnCachorros()  + pColeta.getnGatos() + pColeta.getnRatos() > 0) {
+			CentroDeZoonoses zoonoses = (CentroDeZoonoses) mapa.getVertices().get(mapa.getVertices().size() - 1);
+			try {
+				zoonoses.mandarCarrocinha(mapa, ponto);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return (pColeta.getnCachorros() > 0 ? 1 : 0) + (pColeta.getnGatos() > 0 ? 1 : 0) + (pColeta.getnRatos() > 0 ? 1 : 0) == 1;
 	}
 	

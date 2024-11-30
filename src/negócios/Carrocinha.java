@@ -23,39 +23,41 @@ public class Carrocinha extends Carro {
 	}
 	
 	public void coletar() throws InterruptedException, CapacidadeMaximaException{
-		PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
-	
-		if(capacidade > 0) {
-			if(pontodecoleta.getnCachorros()  + pontodecoleta.getnGatos() > 0) {
-				if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() <=5) {
-					capacidade -= pontodecoleta.getnCachorros() + pontodecoleta.getnGatos();
-					pontodecoleta.setnCachorros(0);
-					pontodecoleta.setnGatos(0);
-				}else {
-					capacidade = 0;
-					int i = 1;
-					while(i <= pontodecoleta.getnCachorros()) {
-						pontodecoleta.setnCachorros(pontodecoleta.getnCachorros() - 1);
-						if(i == 5) {
-							break;
+		if(PontoAtual != mapa.getVertices().size() - 1) {
+			PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
+		
+			if(capacidade > 0) {
+				if(pontodecoleta.getnCachorros()  + pontodecoleta.getnGatos() > 0) {
+					if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() <=5) {
+						capacidade -= pontodecoleta.getnCachorros() + pontodecoleta.getnGatos();
+						pontodecoleta.setnCachorros(0);
+						pontodecoleta.setnGatos(0);
+					}else {
+						capacidade = 0;
+						int i = 1;
+						while(i <= pontodecoleta.getnCachorros()) {
+							pontodecoleta.setnCachorros(pontodecoleta.getnCachorros() - 1);
+							if(i == 5) {
+								break;
+							}
+							i++;
 						}
-						i++;
+						
+						for(int j = 0; j < 5 - i;j++) {
+							pontodecoleta.setnGatos(pontodecoleta.getnGatos() - 1);
+						}
+						}
 					}
 					
-					for(int j = 0; j < 5 - i;j++) {
-						pontodecoleta.setnGatos(pontodecoleta.getnGatos() - 1);
-					}
-					}
 				}
-				
+			else {
+				List<Integer> percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
+				chamarControle(mapa,destino);
+				this.destino = mapa.getVertices().size() - 1;
+				percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
+				locomover(mapa,destino,percurso);
+				throw new CapacidadeMaximaException();
 			}
-		else {
-			List<Integer> percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
-			chamarControle(mapa,destino);
-			this.destino = mapa.getVertices().size() - 1;
-			percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
-			locomover(mapa,destino,percurso);
-			throw new CapacidadeMaximaException();
 		}
 	}
 	
@@ -92,7 +94,7 @@ public class Carrocinha extends Carro {
 	public void locomover(Bairro grafo,int destino, List<Integer> percurso) throws InterruptedException, CapacidadeMaximaException {
 		int a = 0, b = 1;
 		this.destino = destino;
-		if(percurso != null) {
+		if(!percurso.isEmpty()) {
 			do {
 				avancar(grafo, a, b, percurso);
 					coletar();

@@ -32,29 +32,44 @@ public class PontoDeColeta extends Ponto{
 		vLixo = (int)(Math.random() * 20 - 10 + 1) + 10;
 	}
 	
-	public int getnCachorros() {
-		return nCachorros;
-	}
 	public void setnCachorros(int nCachorros) {
 		this.nCachorros = nCachorros;
+	}
+
+	public void setnGatos(int nGatos) {
+		this.nGatos = nGatos;
+	}
+
+	public void setnRatos(int nRatos) {
+		this.nRatos = nRatos;
+	}
+
+	public int getnCachorros() {
+		return nCachorros;
 	}
 	public int getnGatos() {
 		return nGatos;
 	}
-	public void setnGatos(int nGatos) {
-		this.nGatos = nGatos;
-	}
 	public int getnRatos() {
 		return nRatos;
 	}
-	public void setnRatos(int nRatos) {
-		this.nRatos = nRatos;
+	
+	public void addnAnimais(int nCachorros, int nGatos, int nRatos) {
+		this.nCachorros += nCachorros;
+		this.nGatos += nGatos;
+		this.nRatos += nRatos;
 	}
 	public int getvLixo() {
 		return vLixo;
 	}
 	public void setvLixo(int vLixo) {
 		this.vLixo = vLixo;
+	}
+
+	@Override
+	public String toString() {
+		return "PontoDeColeta [nCachorros=" + nCachorros + ", nGatos=" + nGatos + ", nRatos=" + nRatos + ", vLixo="
+				+ vLixo + "]";
 	}
 	
 	

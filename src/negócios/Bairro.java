@@ -22,6 +22,22 @@ public class Bairro {
 		this.w = w;
 	}
 	
+	public void avancarAnimais(int a, int b, int animal) {
+		PontoDeColeta A = (PontoDeColeta)  vertices.get(a);
+		PontoDeColeta B = (PontoDeColeta)  vertices.get(b);
+		TrocaAnimal trocaAnimal = new TrocaAnimal(A, B, animal);
+		trocaAnimal.start();
+	    try {
+	        trocaAnimal.join(); // Espera a thread terminar
+	    } catch (InterruptedException e) {
+	        System.out.println("A execução da thread foi interrompida.");
+	        Thread.currentThread().interrupt(); // Restaura o estado de interrupção
+	    }
+
+//	    situacaoPonto(b);
+	}
+
+
 	public String getNome() {
 		return nome;
 	}
@@ -83,4 +99,102 @@ public class Bairro {
 		this.folhasMod = folhasMod;
 	}
 
+	private class TrocaAnimal extends Thread{
+		private int gatos, cachorros, ratos, animal;
+		
+		private PontoDeColeta a, b;
+
+		public TrocaAnimal(PontoDeColeta a, PontoDeColeta b, int animal) {
+			super();
+			this.animal = animal;
+			this.a = a;
+			this.cachorros = a.getnCachorros();
+			this.gatos = a.getnGatos();
+			this.ratos = a.getnRatos();
+			this.b = b;
+		}
+		
+		@Override
+		public void run() {
+			if(animal == 0) {
+				a.setnCachorros(0);
+				b.setnCachorros(b.getnCachorros() + cachorros);
+				System.out.println("Cachorro saindo de " + vertices.indexOf(a) + " para " + vertices.indexOf(b));
+			}
+			else if(animal == 1) {
+				a.setnGatos(0);
+				b.setnGatos(b.getnGatos() + gatos);
+				System.out.println("Gato saindo de " + vertices.indexOf(a) + " para " + vertices.indexOf(b));
+			}
+			else if(animal == 2) {
+				a.setnRatos(0);
+				b.setnRatos(b.getnRatos() + ratos);
+				System.out.println("Rato saindo de " + vertices.indexOf(a) + " para " + vertices.indexOf(b));
+			}
+		}
+	}
+	
+	public int verificarCachorro(int a) {
+		int ponto = 0;
+		for (int i = 1; i < w.length - 1; i++) {
+			if(w[a][i] > 0) {
+				ponto = i;
+				PontoDeColeta vizinho = (PontoDeColeta) vertices.get(i);
+				if(vizinho.getnGatos() > 0 && vizinho.getvLixo() > 0) {
+					break;
+				}
+			}
+		}
+		return ponto;
+	}
+	
+	public int verificarGatos(int a) {
+		int ponto = 0;
+		for (int i = 1; i < w.length - 1; i++) {
+			if(w[a][i] > 0) {
+				ponto = i;
+				PontoDeColeta vizinho = (PontoDeColeta) vertices.get(i);
+				if(vizinho.getnRatos() > 0 && vizinho.getvLixo() > 0) {
+					break;
+				}
+			}
+		}
+		return ponto;
+	}
+	
+	public int verificarRatos(int a) {
+		int ponto = 0;
+		for (int i = 1; i < w.length - 1; i++) {
+			if(w[a][i] > 0) {
+				ponto = i;
+				PontoDeColeta vizinho = (PontoDeColeta) vertices.get(i);
+				if(vizinho.getvLixo() > 0) {
+					break;
+				}
+			}
+		}
+		return ponto;
+	}
+	
+	public void situacaoPonto(int a) {
+		PontoDeColeta ponto = (PontoDeColeta) vertices.get(a);
+		if(ponto.getvLixo() == 0) {
+			avancarAnimais(a, verificarCachorro(a), 0);
+			avancarAnimais(a, verificarGatos(a), 1);
+			avancarAnimais(a, verificarRatos(a), 2);
+		}
+		else {
+			if(ponto.getnGatos() > 0 && ponto.getnRatos() > 0) {
+				ponto.setnRatos(Math.max(ponto.getnRatos() - ponto.getnGatos(), 0));
+				if(ponto.getnRatos() > 0) {
+					avancarAnimais(a, verificarRatos(a), 2);
+				}
+			}
+			if(ponto.getnCachorros() > 0 && ponto.getnGatos() > 0) {
+				avancarAnimais(a, verificarGatos(a), 1);
+			}
+
+		}
+	}
+	
 }
