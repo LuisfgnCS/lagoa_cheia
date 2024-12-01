@@ -22,7 +22,7 @@ public class Main {
 		int quantidadeCaminhoes = 0;
 		int tempoTotalGasto = 0;
 		Scanner sc = new Scanner(System.in);
-		String caminhoArquivo = "C:/Users/Softex/Downloads/";
+		String caminhoArquivo = "/home/ruanp/Documentos/";
 		List<Ponto> vertices = new ArrayList<>();
 		List<Integer> folhas = new ArrayList<>();
 		
@@ -78,10 +78,12 @@ public class Main {
 
 			for (int i = 0; i < quantidadeCaminhoes; i++) {
 				frota.add(new CaminhaoLixo(quantidadeFuncionarios, 40.0, grafo, latch,String.format(caminhoArquivo + "caminhão%d" , i + 1)));
+				sc.next();
 			}
 
 			for (CaminhaoLixo caminhaolixo : frota) {
 					caminhaolixo.start();
+					Thread.sleep(800);
 			}
 			
 			latch.await();
@@ -94,7 +96,10 @@ public class Main {
 			System.out.println("=============================================");
 			System.out.println(tempoTotalGasto);
 			
-			if (tempoTotalGasto <= (60*8)) {
+			if (tempoTotalGasto <= (60*6)) {
+				for(CaminhaoLixo caminhaolixo: frota) {
+					caminhaolixo.construirRelatorio();
+				}
 				break loopexterno;
 			}
 			
@@ -115,7 +120,7 @@ public class Main {
 					System.out.println();
 					caminhaolixo.setFuncionarios(i);
 					caminhaolixo.construirRelatorio();
-					if (tempoTotalGasto <= (60*8)) {
+					if (tempoTotalGasto <= (60*6)) {
 						break loopexterno;
 					}
 				}
