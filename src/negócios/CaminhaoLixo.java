@@ -50,7 +50,7 @@ public class CaminhaoLixo extends Carro{
 						relatorioIndividual.add("Animais encontrados no local. O LIXO FOI RASGADO!");
 
 					}
-					Thread.sleep(tempo * 1000);
+					Thread.sleep(tempo * 100);
 					lixoArmazenado += lixo;
 					pontodecoleta.setvLixo(0);
 					System.out.println("Lixo recolhido: " + lixo);
@@ -61,7 +61,7 @@ public class CaminhaoLixo extends Carro{
 						tempo = tempo * 2;
 						System.out.println("Animais encontrados no local. O lixo foi rasgado!");
 					}
-					Thread.sleep(tempo * 1000);
+					Thread.sleep(tempo * 100);
 					lixoArmazenado += lixoRecolhido;
 					pontodecoleta.setvLixo((int) (lixo - lixoRecolhido));
 					System.out.println("Lixo recolhido: " + String.format("%.2f", lixoRecolhido));
@@ -173,7 +173,7 @@ public class CaminhaoLixo extends Carro{
 
 			int tempoAB = mapa.getW()[a][b];
 			tempoGastoPercorrendoCaminho = getTempoGastoPercorrendoCaminho() + tempoAB;
-			Thread.sleep(tempoAB * 1000);
+			Thread.sleep(tempoAB * 100);
 			this.PontoAtual = b;
 			System.out.println("Chegou no ponto " + b);
 			relatorioIndividual.add("Chegou no ponto" + b);

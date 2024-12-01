@@ -9,6 +9,7 @@ import java.util.concurrent.CountDownLatch;
 
 import negócios.Bairro;
 import negócios.CaminhaoLixo;
+import negócios.CentroDeZoonoses;
 import negócios.Ponto;
 import negócios.PontoDeColeta;
 
@@ -20,7 +21,7 @@ public class Main {
 		int quantidadeCaminhoes = 0;
 		int tempoTotalGasto = 0;
 		Scanner sc = new Scanner(System.in);
-		String caminhoArquivo = "/home/ruanp/Documentos/";
+		String caminhoArquivo = "C:/Users/Softex/Downloads/";
 		List<Ponto> vertices = new ArrayList<>();
 		List<Integer> folhas = new ArrayList<>();
 		
@@ -81,10 +82,11 @@ public class Main {
 			for (CaminhaoLixo caminhaolixo : frota) {
 					caminhaolixo.start();
 			}
-
+			
 			latch.await();
 			
-
+			CentroDeZoonoses.interromperCarrocinhas(grafo);
+			
 			frota.stream().sorted(Comparator.comparingInt(CaminhaoLixo::totalTempo).reversed());
 
 			tempoTotalGasto = frota.getFirst().getTempoGastoColetandoLixo() + frota.getFirst().getTempoGastoPercorrendoCaminho();
@@ -96,8 +98,7 @@ public class Main {
 			if (tempoTotalGasto <= (60*8)) {
 				break loopexterno;
 			}
-
-
+			
 			for (CaminhaoLixo caminhaolixo : frota) {
 				for (int i = 4; i <= 5; i++) {
 					caminhaolixo.getRelatorioIndividual().add("Adicionando mais funcionários!");
@@ -120,7 +121,6 @@ public class Main {
 					}
 				}
 			}
-
 		} while (true);
 
 		System.out.println("A quantidade de caminhões necessárias é de " + frota.size());
@@ -128,10 +128,10 @@ public class Main {
 		for (CaminhaoLixo caminhaoLixo : frota) {
 			System.out.println("A quantidade de funcionários necessária para o " + contador + "º caminhão é : "
 					+ caminhaoLixo.getFuncionarios());
+			caminhaoLixo.interrupt();
 			contador++;
 		}
-
-		
+		System.exit(0);
 	}
 
 }

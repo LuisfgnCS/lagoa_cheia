@@ -81,7 +81,7 @@ public class Carrocinha extends Carro {
 			b = percurso.get(i);
 			System.out.println("Carrocinha saindo do ponto " + a + " Para o ponto " + b);
 			int tempoAB = mapa.getW()[a][b];
-			Thread.sleep(tempoAB * 1000);
+			Thread.sleep(tempoAB * 100);
 			this.PontoAtual = b;
 			System.out.println("Carrocinha chegou no ponto " + b);
 			if(tipo != 0) {
@@ -96,22 +96,27 @@ public class Carrocinha extends Carro {
 		while(true) {
 			synchronized (lock) {
                 while (ocupada) {
-					List<Integer> percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
-					try {
-						percorrer(percurso, 1);
-						ocupada = true;
-						this.destino = mapa.getVertices().size() - 1;
-						percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
-						percorrer(percurso, 1);
-						capacidade = 5;
-						ocupada = false;
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						System.out.println(e.getMessage());
-					}catch(CapacidadeMaximaException e) {
-						System.out.println("A carrocinha voltou para base, pois estava cheia");
-					
-					}
+                	try {
+						List<Integer> percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
+						
+						try {
+							percorrer(percurso, 1);
+							ocupada = true;
+							this.destino = mapa.getVertices().size() - 1;
+							percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
+							percorrer(percurso, 1);
+							capacidade = 5;
+							ocupada = false;
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							System.out.println(e.getMessage());
+						}catch(CapacidadeMaximaException e) {
+							System.out.println("A carrocinha voltou para base, pois estava cheia");
+						
+						}
+                	}catch (Exception e) {
+                		break;
+                	}
                 }	
 			}
 		}
