@@ -153,7 +153,9 @@ public class Main {
 			System.out.println();
 
 		} while (true);
-
+		for (int j = 0; j < 5; j++) {
+			System.out.println(grafo.getVertices().get(j).toString());
+		}
 		System.out.println("A quantidade de caminhões necessárias é de " + frota.size());
 		int contador = 1;
 		for (CaminhaoLixo caminhaoLixo : frota) {

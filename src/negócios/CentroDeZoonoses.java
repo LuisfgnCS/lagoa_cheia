@@ -1,6 +1,7 @@
 package negócios;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class CentroDeZoonoses extends Ponto{
@@ -27,6 +28,17 @@ public class CentroDeZoonoses extends Ponto{
 			}
 		}else {
 			System.out.println("Todas as carrocinhas estão ocupadas.");
+		}
+	}
+	
+	public static void interromperCarrocinhas(Bairro grafo) {
+		CentroDeZoonoses CZ = (CentroDeZoonoses) grafo.getVertices().get(grafo.getVertices().size() - 1);
+		for (Carrocinha carrocinha : CZ.carrocinhas) {
+			try{
+				carrocinha.interrupt();
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
 		}
 	}
 	
