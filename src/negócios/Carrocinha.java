@@ -79,11 +79,11 @@ public class Carrocinha extends Carro {
 			PontoAtual = -1;
 			a = percurso.get(i - 1);
 			b = percurso.get(i);
-			System.out.println("Saindo do ponto " + a + " Para o ponto " + b);
+			System.out.println("Carrocinha saindo do ponto " + a + " Para o ponto " + b);
 			int tempoAB = mapa.getW()[a][b];
 			Thread.sleep(tempoAB * 1000);
 			this.PontoAtual = b;
-			System.out.println("Chegou no ponto " + b);
+			System.out.println("Carrocinha chegou no ponto " + b);
 			if(tipo != 0) {
 				coletar();
 			}

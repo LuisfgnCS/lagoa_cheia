@@ -57,21 +57,21 @@ public abstract class Gps {
         int[][] mst = new int[n][n];
         List<Integer> folhas = new ArrayList<>();
         
-        for (int i = 0; i < n - 1; i++) {
-        	Arrays.fill(grafo[i], 0);
-		}
+//        for (int i = 0; i < n - 1; i++) {
+//        	Arrays.fill(grafo[i], 0);
+//		}
         Arrays.fill(chave, INF);
         Arrays.fill(pai, -1);
         
-        for (int i = 0; i < n - 1; i++) {
-			for (int j = 0; j < n - 1; j++) {
+        for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
 				grafo[i][j] = w[i][j];
 			}
 		}
 
         chave[0] = 0;
-
-        for (int count = 0; count < n - 1; count++) {
+        
+        for (int count = 0; count < n; count++) {
             int u = minChave(chave, naMST);
             naMST[u] = true;
 
@@ -91,15 +91,19 @@ public abstract class Gps {
             }
         }
 
-        for (int i = 1; i < n - 1; i++) {
+        for (int i = 0; i < n; i++) {
             int conexoes = 0;
-            for (int j = 1; j < n - 1; j++) {
+            for (int j = 0; j < n; j++) {
                 if (mst[i][j] > 0) {
                     conexoes++;
                 }
             }
-            if (conexoes == 1) {
-                folhas.add(i);
+            if (conexoes <= 1) {
+            	if(i == mst.length - 1) {
+            		folhas.add(pai[i]);
+            	}else if(i != 0){            		
+            		folhas.add(i);
+            	}
             }
         }
         return new Result(mst, folhas, pai);

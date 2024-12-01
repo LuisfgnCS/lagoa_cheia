@@ -58,7 +58,6 @@ public class CaminhaoLixo extends Carro{
 						compressoes--;
 						System.out.println("O volume do caminhão foi comprimido para " + String.format("%.2f", lixoArmazenado));
 					} catch (Exception e) {
-						retornar();
 						throw new CapacidadeMaximaException();
 					}
 				}
@@ -70,14 +69,6 @@ public class CaminhaoLixo extends Carro{
 	}
 	
 	private boolean lixoRasgado(PontoDeColeta pColeta, int ponto) {
-		if(pColeta.getnCachorros()  + pColeta.getnGatos() + pColeta.getnRatos() > 0) {
-			try {
-				Carrocinha.chamarControle(mapa, ponto);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		return (pColeta.getnCachorros() > 0 ? 1 : 0) + (pColeta.getnGatos() > 0 ? 1 : 0) + (pColeta.getnRatos() > 0 ? 1 : 0) == 1;
 	}
 	
@@ -128,8 +119,8 @@ public class CaminhaoLixo extends Carro{
 		this.capacidade = capacidade;
 	}
 	
-	@Override
-	public void run() {
+//	@Override
+	public void run1() {
 		while(!mapa.getFolhasMod().isEmpty()) {
 			int folha = menor(mapa.getFolhasMod()); // procura a menor folha que ainda não foi visitada ou está em rota
 			if(folha > 0) {
@@ -141,7 +132,14 @@ public class CaminhaoLixo extends Carro{
 					try {
 						percorrer(percurso, 1);
 					} catch (InterruptedException | CapacidadeMaximaException e) {
-						System.out.println("O caminhão voltou para base pois a capacidade máxima foi atingida");
+						try {
+							retornar();
+							System.out.println("O caminhão voltou para base pois a capacidade máxima foi atingida");
+						} catch (InterruptedException | CapacidadeMaximaException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
 					}
 					System.out.println("o lixo na folha ainda é de: " + destino.getvLixo());
 				}
@@ -173,8 +171,20 @@ public class CaminhaoLixo extends Carro{
 						}
 						try {
 							percorrer(percurso, 3);
+							
 						} catch (InterruptedException | CapacidadeMaximaException e) {
-							// TODO Auto-generated catch block
+							if(mapa.getFolhasMod().indexOf(PontoAtual) == -1) {
+								mapa.getFolhasMod().add(PontoAtual);
+								System.out.println("Nova folha adicionada ao vetor de folhas: " + PontoAtual + " -> " + mapa.getFolhasMod().toString());
+							}
+							try {
+								retornar();
+								System.out.println("O caminhão voltou para base pois a capacidade máxima foi atingida");
+							} catch (InterruptedException | CapacidadeMaximaException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							break;
 						}
 						try {
 							mapa.getFolhasMod().remove(iFolha);
@@ -216,6 +226,9 @@ public class CaminhaoLixo extends Carro{
 		int destino = percurso.size() - 1;
 		System.out.println("Rota do caminhão: " + percurso.toString());
 		int a, b;
+		if(tipo == 3) {
+			coletar();
+		}
 		for(int i = 1; i <= destino; i++) {
 			PontoAtual = -1;
 			a = percurso.get(i - 1);
@@ -227,6 +240,20 @@ public class CaminhaoLixo extends Carro{
 			this.PontoAtual = b;
 			System.out.println("Chegou no ponto " + b);
 			if(tipo != 0) {
+				try {
+					PontoDeColeta pColeta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
+					if(pColeta.getnCachorros()  + pColeta.getnGatos() + pColeta.getnRatos() > 0) {
+						try {
+							mapa.situacaoPonto(PontoAtual);
+							Carrocinha.chamarControle(mapa, PontoAtual);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}catch (Exception e) {
+					System.out.println("não foi possível chamar a carrocinha -------------------------------------------------------------------");
+				}
 				coletar();
 				if(tipo == 2) {
 					try {
@@ -281,4 +308,106 @@ public class CaminhaoLixo extends Carro{
 	public void setTempoGastoColetandoLixo(int tempoGastoColetandoLixo) {
 		this.tempoGastoColetandoLixo = tempoGastoColetandoLixo;
 	}
+	
+	@Override
+	public void run() {
+		while(!mapa.getFolhasMod().isEmpty()) {
+			int folha = menor(mapa.getFolhasMod()); // procura a menor folha que ainda não foi visitada ou está em rota
+			if(folha > 0) {
+				int iFolha = mapa.getFolhasMod().indexOf(folha);
+				List<Integer> percurso = seguirRamo(folha).reversed(); // Traça o percurso pelo ramo até a folha
+				PontoDeColeta destino = (PontoDeColeta) mapa.getVertices().get(folha);
+				destino.emRota = true;
+				try {
+					percorrer(percurso, 1);
+					System.out.println("o lixo na folha ainda é de: " + destino.getvLixo());
+					
+					System.out.println("número da folha: " + folha);
+					System.out.println("Indice da folha: " + iFolha);
+					System.out.println("Ramo completo.");
+					System.out.println("Vetor de folhas: " + mapa.getFolhasMod().toString());
+					try {
+						mapa.getFolhasMod().remove(mapa.getFolhasMod().indexOf(folha));
+					} catch (Exception e) {
+						System.out.println("A folha já foi removida.");
+					}
+					System.out.println("Vetor de folhas: " + mapa.getFolhasMod().toString());
+					while(lixoArmazenado != capacidade && !mapa.getFolhasMod().isEmpty()) {
+						folha = menor(mapa.getFolhasMod());
+						iFolha = mapa.getFolhasMod().indexOf(folha);
+						destino = (PontoDeColeta) mapa.getVertices().get(folha);
+						destino.emRota = true;
+						if(folha != -1) {
+							percurso = mapa.getPercursos()[PontoAtual][folha];
+							try {
+								percorrer(percurso, 0);
+							} catch (InterruptedException | CapacidadeMaximaException e) {
+								// TODO Auto-generated catch block
+							}
+							percurso = seguirRamo(folha);
+							try {
+								percurso.remove(percurso.size()-1);
+							}catch (Exception e) {
+								// TODO: handle exception
+							}
+							try {
+								System.out.println("o lixo na folha ainda é de: " + destino.getvLixo());
+								
+								System.out.println("número da folha: " + folha);
+								System.out.println("Indice da folha: " + iFolha);
+								System.out.println("Ramo completo.");
+								System.out.println("Vetor de folhas: " + mapa.getFolhasMod().toString());
+								try {
+									mapa.getFolhasMod().remove(mapa.getFolhasMod().indexOf(folha));
+								} catch (Exception e) {
+									System.out.println("A folha já foi removida.");
+								}
+								percorrer(percurso, 3);
+
+							} catch (InterruptedException | CapacidadeMaximaException e) {
+								destino.emRota = false;
+								if(mapa.getFolhasMod().indexOf(PontoAtual) == -1) {
+									mapa.getFolhasMod().add(PontoAtual);
+									System.out.println("Nova folha adicionada ao vetor de folhas: " + PontoAtual + " -> " + mapa.getFolhasMod().toString());
+								}
+								try {
+									retornar();
+									System.out.println("O caminhão voltou para base pois a capacidade máxima foi atingida");
+								} catch (InterruptedException | CapacidadeMaximaException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								break;
+							}
+							System.out.println("número da folha: " + folha);
+							System.out.println("Indice da folha: " + iFolha);
+							System.out.println("Ramo completo.");
+							System.out.println("Vetor de folhas: " + mapa.getFolhasMod().toString());
+							try {
+								mapa.getFolhasMod().remove(mapa.getFolhasMod().indexOf(folha));
+							} catch (Exception e) {
+								System.out.println("A folha já foi removida.");
+							}
+						}
+					}
+				} catch (InterruptedException | CapacidadeMaximaException e) {
+					destino.emRota = false;
+					try {
+						retornar();
+						System.out.println("O caminhão voltou para base pois a capacidade máxima foi atingida");
+					} catch (InterruptedException | CapacidadeMaximaException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+			}else {
+				break;
+			}
+		}
+		System.out.println("Tempo para recolher todo lixo: " + tempoGastoColetandoLixo + " minutos");
+		System.out.println("Tempo para percorrer caminho: " + tempoGastoPercorrendoCaminho + " minutos");
+		latch.countDown();	
+	}
+	
 }
