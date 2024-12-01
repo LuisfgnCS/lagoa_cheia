@@ -18,68 +18,78 @@ public class Main {
 		int quantidadeFuncionarios = 3;
 		int quantidadeCaminhoes = 0;
 		int tempoTotalGasto = 0;
+		List<Ponto> vertices = new ArrayList<>();
+		List<Integer> folhas = new ArrayList<>();
+		
+		for(Ponto ponto : grafo.getVertices()) {
+			try {
+				vertices.add((Ponto) ponto.clone());
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		folhas.addAll(grafo.getFolhasMod());
+		
+		
+		int[][] w = new int[grafo.getW().length][grafo.getW().length];
 
+		
+		for (int i = 0; i < w.length; i++) {
+			for (int j = 0; j < w[0].length; j++) {
+				System.out.println(w[i][j] + " -> " + w[i][j]);
+				w[i][j] = grafo.getW()[i][j];
+			}
+		}
+		
+		
 		List<CaminhaoLixo> frota = new ArrayList<>();
 		loopexterno: do {
-			Bairro grafoCopia = null;
-			grafoCopia = new Bairro(grafo.getNome(), grafo.getW());
-			for(Ponto ponto : grafo.getVertices()) {
+			grafo.getVertices().clear();
+			for(Ponto ponto : vertices) {
 				try {
-					grafoCopia.getVertices().add((Ponto) ponto.clone());
+					grafo.getVertices().add((Ponto) ponto.clone());
 				} catch (CloneNotSupportedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			int[][] w = new int[grafo.getW().length][grafo.getW().length];
-			for (int i = 0; i < w.length; i++) {
-				for (int j = 0; j < w[0].length; j++) {
-					System.out.println(w[i][j] + " -> " + w[i][j]);
-					w[i][j] = grafo.getW()[i][j];
-				}
-			}
-			grafoCopia.setW(w);
-			grafoCopia.construirMST();
-			System.out.println(grafoCopia.getNome());
-			System.out.println((PontoDeColeta) grafoCopia.getVertices().get(1));
+			grafo.getFolhasMod().clear();
+			grafo.getFolhasMod().addAll(folhas);
+			
+			grafo.setW(w);
+			System.out.println(grafo.getNome());
+			System.out.println((PontoDeColeta) grafo.getVertices().get(1));
 
 			quantidadeFuncionarios = 3;
 			tempoTotalGasto = 0;
 			quantidadeCaminhoes++;
 			frota.clear();
+			 
 
 			System.out.println("Rodando com " + quantidadeCaminhoes + " caminhões");
 
 			CountDownLatch latch = new CountDownLatch(quantidadeCaminhoes);
 
 			for (int i = 0; i < quantidadeCaminhoes; i++) {
-				frota.add(new CaminhaoLixo(quantidadeFuncionarios, 5.0, grafoCopia, latch));
+				frota.add(new CaminhaoLixo(quantidadeFuncionarios, 20.0, grafo, latch));
 			}
 
 			for (CaminhaoLixo caminhaolixo : frota) {
-				try {
 					caminhaolixo.start();
-
-				}catch(IndexOutOfBoundsException e) {
-					System.out.println("Conflito de rotas!");
-					System.out.println("Iniciando rota novamente!");
-					Thread.sleep(10000);
-					caminhaolixo.start();
-				}
 			}
 
 			latch.await();
 
-			for (CaminhaoLixo caminhaoLixo : frota) {
-				tempoTotalGasto += caminhaoLixo.getTempoGastoColetandoLixo()
-						+ caminhaoLixo.getTempoGastoPercorrendoCaminho();
-			}
 
-			if (tempoTotalGasto <= (80)) {
+			frota.stream().sorted(Comparator.comparing(CaminhaoLixo::getTempoGastoColetandoLixo).reversed());
+
+			tempoTotalGasto = frota.getFirst().getTempoGastoColetandoLixo() + frota.getFirst().getTempoGastoPercorrendoCaminho();
+
+			if (tempoTotalGasto <= (120)) {
 				break loopexterno;
 			}
 
-			frota.stream().sorted(Comparator.comparing(CaminhaoLixo::getTempoGastoColetandoLixo).reversed());
 
 			for (CaminhaoLixo caminhaolixo : frota) {
 				for (int i = 4; i <= 5; i++) {
@@ -93,7 +103,7 @@ public class Main {
 					System.out.println();
 
 					caminhaolixo.setFuncionarios(i);
-					if (tempoTotalGasto <= (80)) {
+					if (tempoTotalGasto <= (120)) {
 						break loopexterno;
 					}
 				}
@@ -109,6 +119,7 @@ public class Main {
 			contador++;
 		}
 
+		
 	}
 
 }
