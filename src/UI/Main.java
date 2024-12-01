@@ -95,7 +95,7 @@ public class Main {
 			System.out.println("=============================================");
 			System.out.println(tempoTotalGasto);
 			
-			if (tempoTotalGasto <= (60*6)) {
+			if (tempoTotalGasto <= (60*8)) {
 				for(CaminhaoLixo caminhaolixo: frota) {
 					caminhaolixo.construirRelatorio();
 				}
@@ -119,7 +119,7 @@ public class Main {
 					System.out.println();
 					caminhaolixo.setFuncionarios(i);
 					caminhaolixo.construirRelatorio();
-					if (tempoTotalGasto <= (60*6)) {
+					if (tempoTotalGasto <= (60*8)) {
 						break loopexterno;
 					}
 				}
