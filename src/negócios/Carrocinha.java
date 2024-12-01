@@ -6,7 +6,7 @@ import java.util.List;
 import exceptions.CapacidadeMaximaException;
 
 public class Carrocinha extends Carro {
-	
+	public final Object lock = new Object();
 	Boolean ocupada = false;
 	int destino = 0;
 	int capacidade = 5;
@@ -23,7 +23,7 @@ public class Carrocinha extends Carro {
 	}
 	
 	public void coletar() throws InterruptedException, CapacidadeMaximaException{
-		if(PontoAtual != mapa.getVertices().size() - 1) {
+		if(PontoAtual != 0 && PontoAtual != mapa.getVertices().size() -1) {
 			PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
 			if(capacidade > 0) {
 				if(pontodecoleta.getnCachorros()  + pontodecoleta.getnGatos() > 0) {
@@ -93,23 +93,28 @@ public class Carrocinha extends Carro {
 	
 	@Override
 	public void run() {
-		List<Integer> percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
-		try {
-			percorrer(percurso, 1);
-			ocupada = true;
-			this.destino = mapa.getVertices().size() - 1;
-			percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
-			percorrer(percurso, 1);
-			capacidade = 5;
-			ocupada = false;
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}catch(CapacidadeMaximaException e) {
-			System.out.println(e.getMessage());
-
+		while(true) {
+			synchronized (lock) {
+                while (ocupada) {
+					List<Integer> percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
+					try {
+						percorrer(percurso, 1);
+						ocupada = true;
+						this.destino = mapa.getVertices().size() - 1;
+						percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
+						percorrer(percurso, 1);
+						capacidade = 5;
+						ocupada = false;
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						System.out.println(e.getMessage());
+					}catch(CapacidadeMaximaException e) {
+						System.out.println("A carrocinha voltou para base, pois estava cheia");
+					
+					}
+                }	
+			}
 		}
-
 	}
 	
 	

@@ -14,9 +14,20 @@ public class CentroDeZoonoses extends Ponto{
 	
 	public void mandarCarrocinha(Bairro grafo,int destino) throws InterruptedException {
 		Carrocinha carrocinha = procurarCarrocinhaDisponivel();
-		carrocinha.destino = destino;
-		List<Integer> percurso = new ArrayList<>(grafo.getPercursos()[carrocinha.PontoAtual][destino]);
-		carrocinha.run();
+		if(carrocinha != null) {
+			carrocinha.destino = destino;
+			List<Integer> percurso = new ArrayList<>(grafo.getPercursos()[carrocinha.PontoAtual][destino]);
+			try {
+				carrocinha.start();
+			} catch (Exception e) {
+				synchronized (carrocinha.lock) {
+		            carrocinha.ocupada = true;
+		            carrocinha.lock.notify(); // Notifica a Thread para executar
+		        }
+			}
+		}else {
+			System.out.println("Todas as carrocinhas estão ocupadas.");
+		}
 	}
 	
 	public Carrocinha procurarCarrocinhaDisponivel() {
