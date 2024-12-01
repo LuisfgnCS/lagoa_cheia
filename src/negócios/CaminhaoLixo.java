@@ -1,5 +1,9 @@
 package negócios;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -15,12 +19,15 @@ public class CaminhaoLixo extends Carro{
 	private int tempoGastoPercorrendoCaminho = 0;
 	private int tempoGastoColetandoLixo = 0;
 	private final CountDownLatch latch;
+	private List<String> relatorioIndividual = new ArrayList<>();
+	private String caminhoArquivo;
 	
-	public CaminhaoLixo( int nFuncionarios, double capacidade, Bairro mapa,CountDownLatch latch) {
+	public CaminhaoLixo( int nFuncionarios, double capacidade, Bairro mapa,CountDownLatch latch, String caminhoArquivo) {
 		super(0, mapa);
 		this.nFuncionarios = nFuncionarios; 
 		this.setCapacidade(capacidade);   
 		this.latch = latch;
+		this.setCaminhoArquivo(caminhoArquivo);
 	}
 
 	public int coletar() throws InterruptedException, CapacidadeMaximaException{
@@ -32,11 +39,14 @@ public class CaminhaoLixo extends Carro{
 				lixo = pontodecoleta.getvLixo();
 				System.out.println("Lixo no local: " + lixo);
 				System.out.println("Capacidade restante do caminhão: " + String.format("%.2f", capacidade - lixoArmazenado));
+				relatorioIndividual.add("Lixo no local: " + lixo);
+				relatorioIndividual.add("Capacidade restante do caminhão: " + String.format("%.2f", capacidade - lixoArmazenado));
 				if(capacidade - lixoArmazenado - lixo > 0){
 					tempo = lixo / this.nFuncionarios;
 					if(lixoRasgado(pontodecoleta, PontoAtual)) {
 						tempo = tempo * 2;
 						System.out.println("Animais encontrados no local. O lixo foi rasgado!");
+						relatorioIndividual.add("Animais encontrados no local. O LIXO FOI RASGADO!");
 					}
 					Thread.sleep(tempo * 1000);
 					lixoArmazenado += lixo;
@@ -48,15 +58,20 @@ public class CaminhaoLixo extends Carro{
 					if(lixoRasgado(pontodecoleta, PontoAtual)) {
 						tempo = tempo * 2;
 						System.out.println("Animais encontrados no local. O lixo foi rasgado!");
+						relatorioIndividual.add("Animais encontrados no local. O LIXO FOI RASGADO!");
+
 					}
 					Thread.sleep(tempo * 1000);
 					lixoArmazenado += lixoRecolhido;
 					pontodecoleta.setvLixo((int) (lixo - lixoRecolhido));
 					System.out.println("Lixo recolhido: " + String.format("%.2f", lixoRecolhido));
+					relatorioIndividual.add("Lixo recolhido" + String.format("%.2f", lixoRecolhido));
 					try {
 						comprimir();
 						compressoes--;
 						System.out.println("O volume do caminhão foi comprimido para " + String.format("%.2f", lixoArmazenado));
+						relatorioIndividual.add("O volume do caminhão foi comprimido para " +String.format("%.2f", lixoArmazenado) );
+						relatorioIndividual.add("O número restante de compressões é agora de " + compressoes);
 					} catch (Exception e) {
 						retornar();
 						throw new CapacidadeMaximaException();
@@ -142,19 +157,23 @@ public class CaminhaoLixo extends Carro{
 						percorrer(percurso, 1);
 					} catch (InterruptedException | CapacidadeMaximaException e) {
 						System.out.println("O caminhão voltou para base pois a capacidade máxima foi atingida");
+						relatorioIndividual.add("O caminhão voltou para a base pois a capacidade máxima foi atingida!");
 					}
 					System.out.println("o lixo na folha ainda é de: " + destino.getvLixo());
+					relatorioIndividual.add("O lixo restante na folha ainda é de " + destino.getvLixo());
 				}
 				System.out.println("número da folha: " + folha);
 				System.out.println("Indice da folha: " + iFolha);
 				System.out.println("Ramo completo.");
 				System.out.println("Vetor de folhas: " + mapa.getFolhasMod().toString());
+				
 				try {
 					mapa.getFolhasMod().remove(mapa.getFolhasMod().indexOf(folha));
 				} catch (Exception e) {
 					System.out.println("A folha já foi removida.");
 				}
 				System.out.println("Vetor de folhas: " + mapa.getFolhasMod().toString());
+				relatorioIndividual.add("Vetor de folhas: " + mapa.getFolhasMod().toString());
 				while(lixoArmazenado != capacidade && !mapa.getFolhasMod().isEmpty()) {
 					folha = menor(mapa.getFolhasMod());
 					iFolha = mapa.getFolhasMod().indexOf(folha);
@@ -189,6 +208,11 @@ public class CaminhaoLixo extends Carro{
 		}
 		System.out.println("Tempo para recolher todo lixo: " + tempoGastoColetandoLixo + " minutos");
 		System.out.println("Tempo para percorrer caminho: " + tempoGastoPercorrendoCaminho + " minutos");
+		relatorioIndividual.add("Resultado da rota do caminhão");
+		relatorioIndividual.add("Tempo para recolher todo lixo: " + tempoGastoColetandoLixo + " minutos");
+		relatorioIndividual.add("Tempo para percorrer caminho: " + tempoGastoPercorrendoCaminho + " minutos");
+		relatorioIndividual.add("Tempo total gasto: " + String.format("%d", tempoGastoColetandoLixo + tempoGastoPercorrendoCaminho) );
+
 		latch.countDown();	
 	}
 	
@@ -215,17 +239,24 @@ public class CaminhaoLixo extends Carro{
 	public void percorrer(List<Integer> percurso, int tipo) throws InterruptedException, CapacidadeMaximaException {
 		int destino = percurso.size() - 1;
 		System.out.println("Rota do caminhão: " + percurso.toString());
+		relatorioIndividual.add("Rota do caminhão: " + percurso.toString());
+		relatorioIndividual.add("        ");
+
+		relatorioIndividual.add("Iniciando rota do caminhão");
+
 		int a, b;
 		for(int i = 1; i <= destino; i++) {
 			PontoAtual = -1;
 			a = percurso.get(i - 1);
 			b = percurso.get(i);
 			System.out.println("Saindo do ponto " + a + " Para o ponto " + b);
+			relatorioIndividual.add("Saindo do ponto" + a + " Para o ponto" + b);
 			int tempoAB = mapa.getW()[a][b];
 			tempoGastoPercorrendoCaminho = getTempoGastoPercorrendoCaminho() + tempoAB;
 			Thread.sleep(tempoAB * 1000);
 			this.PontoAtual = b;
 			System.out.println("Chegou no ponto " + b);
+			relatorioIndividual.add("Chegou no ponto" + b);
 			if(tipo != 0) {
 				coletar();
 				if(tipo == 2) {
@@ -244,6 +275,15 @@ public class CaminhaoLixo extends Carro{
 				}
 			}
 		}
+	}
+	
+	public void  construirRelatorio() {
+		 try {
+	            Files.write(Paths.get(caminhoArquivo),relatorioIndividual);
+	            System.out.println("Escrita concluída!");
+	        } catch (IOException e) {
+	            System.out.println("Ocorreu um erro: " + e.getMessage());
+	        }
 	}
 
 	private int buscarAntecessor(int atual, int prox) {
@@ -280,5 +320,22 @@ public class CaminhaoLixo extends Carro{
 
 	public void setTempoGastoColetandoLixo(int tempoGastoColetandoLixo) {
 		this.tempoGastoColetandoLixo = tempoGastoColetandoLixo;
+	}
+
+	public String getCaminhoArquivo() {
+		return caminhoArquivo;
+	}
+
+	public void setCaminhoArquivo(String caminhoArquivo) {
+		this.caminhoArquivo = caminhoArquivo;
+	}
+	
+	public int totalTempo() {
+		return tempoGastoPercorrendoCaminho + tempoGastoColetandoLixo;
+	}
+
+
+	public List<String> getRelatorioIndividual(){
+		return relatorioIndividual;
 	}
 }

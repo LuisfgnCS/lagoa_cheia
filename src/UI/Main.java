@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
 import negócios.Bairro;
@@ -18,6 +19,8 @@ public class Main {
 		int quantidadeFuncionarios = 3;
 		int quantidadeCaminhoes = 0;
 		int tempoTotalGasto = 0;
+		Scanner sc = new Scanner(System.in);
+		String caminhoArquivo = "/home/ruanp/Documentos/";
 		List<Ponto> vertices = new ArrayList<>();
 		List<Integer> folhas = new ArrayList<>();
 		
@@ -72,7 +75,7 @@ public class Main {
 			CountDownLatch latch = new CountDownLatch(quantidadeCaminhoes);
 
 			for (int i = 0; i < quantidadeCaminhoes; i++) {
-				frota.add(new CaminhaoLixo(quantidadeFuncionarios, 20.0, grafo, latch));
+				frota.add(new CaminhaoLixo(quantidadeFuncionarios, 20.0, grafo, latch,String.format(caminhoArquivo + "caminhão%d" , i + 1)));
 			}
 
 			for (CaminhaoLixo caminhaolixo : frota) {
@@ -80,12 +83,19 @@ public class Main {
 			}
 
 			latch.await();
+			
+			grafo.getVertices().forEach(vertice -> System.out.println(vertice));
 
 
-			frota.stream().sorted(Comparator.comparing(CaminhaoLixo::getTempoGastoColetandoLixo).reversed());
+			frota.stream().sorted(Comparator.comparingInt(CaminhaoLixo::totalTempo).reversed());
 
 			tempoTotalGasto = frota.getFirst().getTempoGastoColetandoLixo() + frota.getFirst().getTempoGastoPercorrendoCaminho();
+			
 
+			System.out.println("=============================================");
+			System.out.println(tempoTotalGasto);
+			sc.next();
+			
 			if (tempoTotalGasto <= (120)) {
 				break loopexterno;
 			}
@@ -93,16 +103,21 @@ public class Main {
 
 			for (CaminhaoLixo caminhaolixo : frota) {
 				for (int i = 4; i <= 5; i++) {
+					caminhaolixo.getRelatorioIndividual().add("Adicionando mais funcionários!");
 					System.out.println("Testando com " + i + " Funcionários");
+					caminhaolixo.getRelatorioIndividual().add("Testando com " + i + "funcionarios!");
 					tempoTotalGasto -= caminhaolixo.getTempoGastoColetandoLixo();
 					System.out.println("tempo total anterior para coletar lixo " + caminhaolixo.getTempoGastoColetandoLixo());
+					caminhaolixo.getRelatorioIndividual().add("Tempo total anterior para coletar lixo: " + caminhaolixo.getTempoGastoColetandoLixo());
 					tempoTotalGasto += ((caminhaolixo.getTempoGastoColetandoLixo() * (i - 1)) / i);
 					caminhaolixo.setTempoGastoColetandoLixo((caminhaolixo.getTempoGastoColetandoLixo() * (i - 1)) / i);
 					System.out.println();
 					System.out.printf("Novo tempo total ára coletar lixo %d", caminhaolixo.getTempoGastoColetandoLixo());
+					caminhaolixo.getRelatorioIndividual().add("Novo tempo total para coletar lixo:" + caminhaolixo.getTempoGastoColetandoLixo());
+					caminhaolixo.getRelatorioIndividual().add("Novo tempo geral: " + caminhaolixo.totalTempo());
 					System.out.println();
-
 					caminhaolixo.setFuncionarios(i);
+					caminhaolixo.construirRelatorio();
 					if (tempoTotalGasto <= (120)) {
 						break loopexterno;
 					}
