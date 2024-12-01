@@ -78,7 +78,6 @@ public class Main {
 
 			for (int i = 0; i < quantidadeCaminhoes; i++) {
 				frota.add(new CaminhaoLixo(quantidadeFuncionarios, 40.0, grafo, latch,String.format(caminhoArquivo + "caminhão%d" , i + 1)));
-				sc.next();
 			}
 
 			for (CaminhaoLixo caminhaolixo : frota) {
