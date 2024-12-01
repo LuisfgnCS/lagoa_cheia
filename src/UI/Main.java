@@ -2,6 +2,7 @@ package UI;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
@@ -86,10 +87,8 @@ public class Main {
 			latch.await();
 			
 			CentroDeZoonoses.interromperCarrocinhas(grafo);
-			
-			frota.stream().sorted(Comparator.comparingInt(CaminhaoLixo::totalTempo).reversed());
 
-			tempoTotalGasto = frota.getFirst().getTempoGastoColetandoLixo() + frota.getFirst().getTempoGastoPercorrendoCaminho();
+			tempoTotalGasto = Collections.max(frota, Comparator.comparingDouble(p -> p.totalTempo())).totalTempo();
 			
 
 			System.out.println("=============================================");
