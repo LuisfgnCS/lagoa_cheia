@@ -5,7 +5,7 @@ O Algoritimo dos caminhões tem como objetivo calcular a quantidade mínima de c
 
 * O caminhão tem capacidade máxima e uma vez que foi atingida ele tem que voltar para base a não ser que possa realizar compressões.
 * Existem animais na rua que podem espalhar o lixo e atrasar o tempo de coleta.
-* É necessário implementar carrocinhas que vão atrás desses animais e essas carrocinhas também tem capacidade máxima, precisando voltar para a base caso seja atingida.
+* É necessário implementar carrocinhas que vão atrás desses animais e essas carrocinhas também tem capacidade máxima, precisando voltar para a base caso a capacidade máxima seja atingida.
 * Um caminhão pode ter 3 a 5 funcionários para coletar o lixo.
 ## Apêndice :page_facing_up:
 
