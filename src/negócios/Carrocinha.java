@@ -23,10 +23,10 @@ public class Carrocinha extends Carro {
 	}
 	
 	public void coletar() throws InterruptedException, CapacidadeMaximaException{
-		if(PontoAtual != 0 && PontoAtual != mapa.getVertices().size() -1) {
-			PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual);
-			if(capacidade > 0) {
-				if(pontodecoleta.getnCachorros()  + pontodecoleta.getnGatos() > 0) {
+		if(PontoAtual != 0 && PontoAtual != mapa.getVertices().size() -1) { // Coleta apenas em pontos de coleta
+			PontoDeColeta pontodecoleta = (PontoDeColeta) mapa.getVertices().get(PontoAtual); // Pega o ponto atual
+			if(capacidade > 0) { // Checa se ainda existe capacidade
+				if(pontodecoleta.getnCachorros()  + pontodecoleta.getnGatos() > 0) { // Checa se é possível pegar todos os animais
 					if(pontodecoleta.getnCachorros() + pontodecoleta.getnGatos() <=5) {
 						capacidade -= pontodecoleta.getnCachorros() + pontodecoleta.getnGatos();
 						pontodecoleta.setnCachorros(0);
@@ -35,7 +35,7 @@ public class Carrocinha extends Carro {
 						capacidade = 0;
 						int i = 1;
 						int c = pontodecoleta.getnCachorros();
-						while(i <= c) {
+						while(i <= c) { // Pega o máximo de cachorros possíveis 
 							pontodecoleta.setnCachorros(pontodecoleta.getnCachorros() - 1);
 							if(i == 5) {
 								break;
@@ -44,7 +44,7 @@ public class Carrocinha extends Carro {
 						}
 						System.out.println("Número de cachorros recolhidos: " + i);
 						
-						for(int j = 0; j <= 5 - i;j++) {
+						for(int j = 0; j <= 5 - i;j++) { // O restando de capacidade é preenchido com gatos
 							pontodecoleta.setnGatos(pontodecoleta.getnGatos() - 1);
 						}
 						
@@ -53,7 +53,7 @@ public class Carrocinha extends Carro {
 					}
 					
 				}
-			else {
+			else { // Caso a capacidade estiver vazia, volta para a base e enviar uma carrocinha para onde a primeira tinha que ir
 				List<Integer> percurso = new ArrayList<>(mapa.getPercursos()[PontoAtual][this.destino]);
 				chamarControle(mapa,destino);
 				this.destino = mapa.getVertices().size() - 1;
@@ -66,12 +66,12 @@ public class Carrocinha extends Carro {
 		}
 	}
 	
-	public static void chamarControle(Bairro grafo,int destino) throws InterruptedException {
+	public static void chamarControle(Bairro grafo,int destino) throws InterruptedException { // Função para chamar outra carrocinha
 		CentroDeZoonoses cz = (CentroDeZoonoses)grafo.getVertices().get(grafo.getVertices().size() -1);
 		cz.mandarCarrocinha(grafo, destino);
 	}
 
-	public void percorrer(List<Integer> percurso, int tipo) throws InterruptedException, CapacidadeMaximaException {
+	public void percorrer(List<Integer> percurso, int tipo) throws InterruptedException, CapacidadeMaximaException { // Função para se locomover para o destino seguindo um percurso
 		int destino = percurso.size() - 1;
 		System.out.println("Rota da carrocinha: " + percurso.toString());
 		int a, b;
@@ -92,7 +92,7 @@ public class Carrocinha extends Carro {
 	
 	
 	@Override
-	public void run() {
+	public void run() { // Função principal que vai executar em multi threading com as outras 
 		while(true) {
 			synchronized (lock) {
                 while (ocupada) {
