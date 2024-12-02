@@ -58,6 +58,6 @@ n n n
 ## Vídeos de cada membro  :clapper:
 
  - [Ruan Pablo](https://www.youtube.com/watch?v=IP-VOMF8TgQ)
- - [Luís Fagner](https://github.com/matiassingers/awesome-readme)
+ - [Luís Fagner](https://drive.google.com/file/d/1TK16_Aa2WtULxc3YwTNCjRv2MMzzoLzB/view?usp=sharing)
  - [Gabriel Farias](https://youtu.be/V_CyxRjIZvY)
 
