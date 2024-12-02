@@ -33,8 +33,6 @@ public class Bairro {
 	        System.out.println("A execução da thread foi interrompida.");
 	        Thread.currentThread().interrupt(); // Restaura o estado de interrupção
 	    }
-
-//	    situacaoPonto(b);
 	}
 
 
