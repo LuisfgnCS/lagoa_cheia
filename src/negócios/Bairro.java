@@ -22,7 +22,7 @@ public class Bairro {
 		this.w = w;
 	}
 	
-	public void avancarAnimais(int a, int b, int animal) {
+	public void avancarAnimais(int a, int b, int animal) { // Manda os animais do tipo selecionado de um ponto A para outro ponto B
 		PontoDeColeta A = (PontoDeColeta)  vertices.get(a);
 		PontoDeColeta B = (PontoDeColeta)  vertices.get(b);
 		TrocaAnimal trocaAnimal = new TrocaAnimal(A, B, animal);
@@ -70,9 +70,9 @@ public class Bairro {
 	            
 	        }
 	    }		
-	    this.mst = Gps.calcularMSTeFolhas(w);
-		percursos = Gps.camMin(this);
-		setFolhasMod(new ArrayList<Integer>(mst.folhas));
+	    this.mst = Gps.calcularMSTeFolhas(w); // Gera a MST
+		percursos = Gps.camMin(this); // Calcula os caminhos mínimos
+		setFolhasMod(new ArrayList<Integer>(mst.folhas)); // Cria um vetor modificável de folhas da árvore
 	}
 
 	public int getDistanciasValor(int i, int j) {
@@ -101,6 +101,9 @@ public class Bairro {
 
 	private class TrocaAnimal extends Thread{
 		private int gatos, cachorros, ratos, animal;
+		// Animal 0 = Cachorro
+		// Animal 1 = Gato
+		// Animal 2 = Rato
 		
 		private PontoDeColeta a, b;
 
@@ -116,17 +119,17 @@ public class Bairro {
 		
 		@Override
 		public void run() {
-			if(animal == 0) {
+			if(animal == 0) { // Move os cachorros do local
 				a.setnCachorros(0);
 				b.setnCachorros(b.getnCachorros() + cachorros);
-				System.out.println("Cachorro saindo de " + vertices.indexOf(a) + " para " + vertices.indexOf(b));
+				System.out.println("Cachorro saindo de " + vertices.indexOf(a) + " para " + vertices.indexOf(b)); 
 			}
-			else if(animal == 1) {
+			else if(animal == 1) { // Move os gatos do local
 				a.setnGatos(0);
 				b.setnGatos(b.getnGatos() + gatos);
 				System.out.println("Gato saindo de " + vertices.indexOf(a) + " para " + vertices.indexOf(b));
 			}
-			else if(animal == 2) {
+			else if(animal == 2) { // Move os ratos do local
 				a.setnRatos(0);
 				b.setnRatos(b.getnRatos() + ratos);
 				System.out.println("Rato saindo de " + vertices.indexOf(a) + " para " + vertices.indexOf(b));
@@ -134,42 +137,42 @@ public class Bairro {
 		}
 	}
 	
-	public int verificarCachorro(int a) {
+	public int verificarCachorro(int a) { // Método para verificar melhor vizinho para o cachorro se locomover 
 		int ponto = 0;
 		for (int i = 1; i < w.length - 1; i++) {
 			if(w[a][i] > 0) {
 				ponto = i;
 				PontoDeColeta vizinho = (PontoDeColeta) vertices.get(i);
 				if(vizinho.getnGatos() > 0 && vizinho.getvLixo() > 0) {
-					break;
+					break; // Se o vizinho tiver gatos e lixo, Se move pra ele imediatamente
 				}
 			}
 		}
 		return ponto;
 	}
 	
-	public int verificarGatos(int a) {
+	public int verificarGatos(int a) { // Método para verificar o melhor vizinho para o gato se se locomover
 		int ponto = 0;
 		for (int i = 1; i < w.length - 1; i++) {
 			if(w[a][i] > 0) {
 				ponto = i;
 				PontoDeColeta vizinho = (PontoDeColeta) vertices.get(i);
 				if(vizinho.getnRatos() > 0 && vizinho.getvLixo() > 0) {
-					break;
+					break; // Se o vizinho tiver ratos e lixo, Se move pra ele imediatamente
 				}
 			}
 		}
 		return ponto;
 	}
 	
-	public int verificarRatos(int a) {
+	public int verificarRatos(int a) { // Método para verificar o melhor vizinho para o rato se locomover
 		int ponto = 0;
 		for (int i = 1; i < w.length - 1; i++) {
 			if(w[a][i] > 0) {
 				ponto = i;
 				PontoDeColeta vizinho = (PontoDeColeta) vertices.get(i);
 				if(vizinho.getvLixo() > 0) {
-					break;
+					break; // Se o vizinho tiver lixo, se move pra ele imediatamente
 				}
 			}
 		}
@@ -178,20 +181,20 @@ public class Bairro {
 	
 	public void situacaoPonto(int a) {
 		PontoDeColeta ponto = (PontoDeColeta) vertices.get(a);
-		if(ponto.getvLixo() == 0) {
+		if(ponto.getvLixo() == 0) { // Se o lixo no local acabou, move os animais dele
 			avancarAnimais(a, verificarCachorro(a), 0);
 			avancarAnimais(a, verificarGatos(a), 1);
 			avancarAnimais(a, verificarRatos(a), 2);
 		}
-		else {
-			if(ponto.getnGatos() > 0 && ponto.getnRatos() > 0) {
-				ponto.setnRatos(Math.max(ponto.getnRatos() - ponto.getnGatos(), 0));
-				if(ponto.getnRatos() > 0) {
-					avancarAnimais(a, verificarRatos(a), 2);
+		else { // Caso não:
+			if(ponto.getnGatos() > 0 && ponto.getnRatos() > 0) { // Se tiver gatos no local
+				ponto.setnRatos(Math.max(ponto.getnRatos() - ponto.getnGatos(), 0)); // Os gatos matam um rato cada
+				if(ponto.getnRatos() > 0) { // Se sobrarem ratos...
+					avancarAnimais(a, verificarRatos(a), 2); // Manda os ratos para o melhor vizinho
 				}
 			}
-			if(ponto.getnCachorros() > 0 && ponto.getnGatos() > 0) {
-				avancarAnimais(a, verificarGatos(a), 1);
+			if(ponto.getnCachorros() > 0 && ponto.getnGatos() > 0) { // se tiver cachorros no local
+				avancarAnimais(a, verificarGatos(a), 1); // Manda os gatos para o melhor vizinho
 			}
 
 		}

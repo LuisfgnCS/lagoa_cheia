@@ -122,17 +122,4 @@ public class Carrocinha extends Carro {
 		}
 	}
 	
-	
-	
-	@Override
-	public void locomover(Bairro grafo,int destino, List<Integer> percurso) throws InterruptedException, CapacidadeMaximaException {
-		int a = 0, b = 1;
-		this.destino = destino;
-		if(!percurso.isEmpty()) {
-			do {
-				avancar(grafo, a, b, percurso);
-					coletar();
-			} while(b != this.destino);
-		}
-	}
 }

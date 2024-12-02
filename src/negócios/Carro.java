@@ -14,19 +14,6 @@ public abstract class Carro extends Thread{
 		this.mapa = mapa;
 	}
 	
-	public abstract void locomover(Bairro grafo, int destino, List<Integer> percursos) throws InterruptedException, CapacidadeMaximaException; 
-	
-	public int avancar(Bairro grafo, int a, int b, List<Integer> percurso) throws InterruptedException {
-		this.PontoAtual = -1;
-		System.out.println("Saindo do ponto " + a + " Para o ponto " + b);
-		Thread.sleep(grafo.getW()[percurso.get(a)][percurso.get(b)] * 1000);
-		this.PontoAtual = percurso.get(b);
-		System.out.println("Chegou no ponto " + b);
-		return grafo.getW()[percurso.get(a)][percurso.get(b)];
-	}
-	
-	
-	
 	public int menor(List<Integer> folhas) {
 		int menorElemento = -1;
 		try {
