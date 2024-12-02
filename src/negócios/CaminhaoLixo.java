@@ -27,7 +27,8 @@ public class CaminhaoLixo extends Carro{
 		this.nFuncionarios = nFuncionarios; 
 		this.setCapacidade(capacidade);   
 		this.latch = latch;
-		this.setCaminhoArquivo(caminhoArquivo);
+		this.caminhoArquivo = caminhoArquivo;
+		System.out.println(caminhoArquivo);
 
 	}
 
